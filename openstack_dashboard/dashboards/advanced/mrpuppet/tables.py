@@ -13,7 +13,7 @@ def is_deleting(instance):
 class ApplyAction(tables.LinkAction):
     name = "applyaction"
     verbose_name = _("Apply Action")
-    url = "horizon:advanced:mrpappuet:apply_action1"
+    url = "horizon:advanced:mrpappuet:apply_action"
     classes = ("ajax-modal",)
     icon = "camera"
 
