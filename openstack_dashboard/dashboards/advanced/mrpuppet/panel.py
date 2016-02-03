@@ -20,4 +20,4 @@ class MrPuppet(horizon.Panel):
     slug = "mrpuppet"
 
 
-dashboard.Mydashboard.register(MrPuppet)
+dashboard.Advanced.register(MrPuppet)
