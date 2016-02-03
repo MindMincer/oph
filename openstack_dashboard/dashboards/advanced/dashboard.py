@@ -15,17 +15,17 @@ from django.utils.translation import ugettext_lazy as _
 import horizon
 
 
+class Advgroup(horizon.PanelGroup):
+    slug = "mygroup"
+    name = _("My Group")
+    panels = ('mrpuppet',)
+
+
 class Advanced(horizon.Dashboard):
     name = _("Advanced")
     slug = "advanced"
     panels = (Advgroup,)  # Add your panels here.
     default_panel = 'mrpuppet'  # Specify the slug of the dashboard's default panel.
-
-
-class Advgroup(horizon.PanelGroup):
-    slug = "mygroup"
-    name = _("My Group")
-    panels = ('mrpuppet',)
 
 
 horizon.register(Advanced)
