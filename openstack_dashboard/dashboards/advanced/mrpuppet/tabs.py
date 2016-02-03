@@ -35,6 +35,6 @@ class InstanceTab(tabs.TableTab):
             return []
 
 class AdvancedTabs(tabs.TabGroup):
-    slug = "mypanel_tabs"
+    slug = "mrpuppet_tabs"
     tabs = (InstanceTab,)
     sticky = True
