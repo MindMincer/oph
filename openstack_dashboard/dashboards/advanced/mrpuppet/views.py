@@ -46,7 +46,7 @@ class CreateSnapshotView(forms.ModalFormView):
     modal_id = "apply_action_modal"
     modal_header = _("Create Snapshot")
     submit_label = _("Create Snapshot")
-    submit_url = "horizon:advanced:mrpuppet:apply_action"
+    submit_url = "horizon:advanced:mrpuppet:lalalala"
 
     @memoized.memoized_method
     def get_object(self):
