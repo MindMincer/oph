@@ -21,6 +21,10 @@ class ApplyAction(tables.LinkAction):
         return instance.status in ("ACTIVE") \
             and not is_deleting(instance)
 
+    def get_link_url(self, datum=None):
+        obj_id = self.table.get_object_id(datum)
+        return "/horizon/advanced/mrpuppet/{0}/apply_action".format(obj_id)
+
 
 class MyFilterAction(tables.FilterAction):
     name = "myfilter"
