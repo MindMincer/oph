@@ -15,11 +15,10 @@ from django.conf.urls import url
 
 from openstack_dashboard.dashboards.advanced.mrpuppet import views 
 
+INSTANCES = r'^(?P<instance_id>[^/]+)/%s$'
 
-urlpatterns = patterns('',
-    url(r'^$',
-        views.IndexView.as_view(), name='index'),
-    url(r'^(?P<instance_id>[^/]+)/apply_action/$',
-        views.ApplyActionView.as_view(),
-        name='apply_action'),
+urlpatterns = patterns(
+	'openstack_dashboard.dashboards.advanced.mrpuppet.views',
+    url(r'^$',views.IndexView.as_view(), name='index'),
+    url(INSTANCES % 'apply_action', views.ApplyActionView.as_view(), name='apply_action'),
 )
