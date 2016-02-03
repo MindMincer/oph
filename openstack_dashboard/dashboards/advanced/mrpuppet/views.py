@@ -39,14 +39,14 @@ class IndexView(tabs.TabbedTableView):
         return context
 
 
-class CreateSnapshotView(forms.ModalFormView):
-    form_class = project_forms.CreateSnapshot
+class ApplyActionView(forms.ModalFormView):
+    form_class = project_forms.ApplyAction
     template_name = 'advanced/mrpuppet/apply_action.html'
-    success_url = reverse_lazy("horizon:project:images:index")
+    success_url = reverse_lazy("horizon:advanced:mrpuppet:index")
     modal_id = "apply_action_modal"
-    modal_header = _("Create Snapshot")
-    submit_label = _("Create Snapshot")
-    submit_url = "horizon:advanced:mrpuppet:lalalala"
+    modal_header = _("Apply Action")
+    submit_label = _("Apply Action")
+    submit_url = "horizon:advanced:mrpuppet:apply_action"
 
     @memoized.memoized_method
     def get_object(self):

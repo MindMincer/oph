@@ -20,6 +20,6 @@ urlpatterns = patterns('',
     url(r'^$',
         views.IndexView.as_view(), name='index'),
     url(r'^(?P<instance_id>[^/]+)/apply_action/$',
-        views.CreateSnapshotView.as_view(),
+        views.CApplyActionView.as_view(),
         name='apply_action'),
 )
