@@ -43,7 +43,7 @@ class CreateSnapshotView(forms.ModalFormView):
     form_class = project_forms.CreateSnapshot
     template_name = 'advanced/mrpuppet/apply_action.html'
     success_url = reverse_lazy("horizon:project:images:index")
-    modal_id = "create_snapshot_modal"
+    modal_id = "apply_action_modal"
     modal_header = _("Create Snapshot")
     submit_label = _("Create Snapshot")
     submit_url = "horizon:advanced:mrpuppet:apply_action"

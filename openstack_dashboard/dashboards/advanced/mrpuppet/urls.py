@@ -19,7 +19,7 @@ from openstack_dashboard.dashboards.advanced.mrpuppet import views
 urlpatterns = patterns('',
     url(r'^$',
         views.IndexView.as_view(), name='index'),
-    url(r'^(?P<instance_id>[^/]+)/create_snapshot/$',
+    url(r'^(?P<instance_id>[^/]+)/apply_action/$',
         views.CreateSnapshotView.as_view(),
-        name='create_snapshot'),
+        name='apply_action'),
 )
