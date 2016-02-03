@@ -10,9 +10,9 @@ def is_deleting(instance):
     return task_state.lower() == "deleting"
 
 
-class CreateSnapshotAction(tables.LinkAction):
-    name = "snapshot"
-    verbose_name = _("Create Snapshot")
+class ApplyAction(tables.LinkAction):
+    name = "applyaction"
+    verbose_name = _("Apply Action")
     url = "horizon:advanced:mrpappuet:apply_action"
     classes = ("ajax-modal",)
     icon = "camera"
@@ -36,4 +36,4 @@ class InstancesTable(tables.DataTable):
         name = "instances"
         verbose_name = _("Instances")
         table_actions = (MyFilterAction,)
-        row_actions = (CreateSnapshotAction,)
+        row_actions = (ApplyAction,)

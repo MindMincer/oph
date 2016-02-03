@@ -7,7 +7,7 @@ from horizon import forms
 from openstack_dashboard import api
 
 
-class CreateSnapshot(forms.SelfHandlingForm):
+class ApplyAction(forms.SelfHandlingForm):
     instance_id = forms.CharField(label=_("Instance ID"),
                                   widget=forms.HiddenInput(),
                                   required=False)
