@@ -13,17 +13,13 @@ def is_deleting(instance):
 class ApplyAction(tables.LinkAction):
     name = "applyaction"
     verbose_name = _("Apply Action")
-    url = "horizon:advanced:mrpappuet:apply_action"
+    url = "horizon:advanced:mrpuppet:apply_action"
     classes = ("ajax-modal",)
     icon = "camera"
 
     def allowed(self, request, instance=None):
         return instance.status in ("ACTIVE") \
             and not is_deleting(instance)
-
-    def get_link_url(self, datum=None):
-        obj_id = self.table.get_object_id(datum)
-        return "/horizon/advanced/mrpuppet/{0}/apply_action".format(obj_id)
 
 
 class MyFilterAction(tables.FilterAction):
