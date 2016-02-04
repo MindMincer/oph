@@ -19,7 +19,7 @@ class UpdateMetadata(forms.SelfHandlingForm):
         instance_id = kwargs.get('initial', {}).get('instance_id')
         # self.fields['instance_id'].initial = instance_id
         metadatas = api.nova.server_get(self.request, instance_id).to_dict()
-        for key, value in metadatas['metadata']:
+        for key, value in metadatas['metadata'].items():
             self.fields[key] = forms.CharField(label=key)
             self.fields[key].required = True
             self.fields[key].help_text = key
