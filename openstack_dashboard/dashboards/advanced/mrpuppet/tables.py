@@ -15,6 +15,10 @@ def has_metadata(instance):
     return True
 
 
+class DeleteMetadata(tables.LinkAction):
+    ### ToDd
+    pass
+
 class UpdateMetadata(tables.LinkAction):
     name = "updatemetadata"
     verbose_name = _("Update Metadata")

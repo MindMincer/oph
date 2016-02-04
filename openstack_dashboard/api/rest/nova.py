@@ -123,6 +123,10 @@ class Servers(generic.View):
         'config_drive'
     ]
 
+    def get(self, request):
+        server = api.nova.server_list(self.request).to_dict()
+        return server
+
     @rest_utils.ajax(data_required=True)
     def post(self, request):
         """Create a server.
