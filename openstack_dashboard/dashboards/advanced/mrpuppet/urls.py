@@ -20,6 +20,6 @@ INSTANCES = r'^(?P<instance_id>[^/]+)/%s$'
 urlpatterns = patterns(
 	'openstack_dashboard.dashboards.advanced.mrpuppet.views',
     url(r'^$',views.IndexView.as_view(), name='index'),
-    url(INSTANCES % 'add_metadata', views.UpdateMetadataView.as_view(), name='add_metadata'),
-    url(INSTANCES % 'update_metadata', views.AddMetadataView.as_view(), name='update_metadata'),
+    url(INSTANCES % 'add_metadata', views.AddMetadataView.as_view(), name='add_metadata'),
+    url(INSTANCES % 'update_metadata', views.UpdateMetadataView.as_view(), name='update_metadata'),
 )
