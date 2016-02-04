@@ -197,6 +197,22 @@ class Server(generic.View):
 
 
 @urls.register
+class Metadata(generic.View):
+    """API for retrieving a single server
+    """
+    url_regex = r'nova/metadata/(?P<server_id>.+|default)$'
+
+    def get(self, request, server_id):
+        """Get a specific server's metadata
+
+        http://localhost/api/nova/metadata/1
+        """
+        server_data = api.nova.server_get(request, server_id).to_dict()
+        metadata_data = server_data['metadata']
+        return HttpResponse(json.dumps(metadata_data), content_type="application/json.")
+
+
+@urls.register
 class Extensions(generic.View):
     """API for nova extensions.
     """
