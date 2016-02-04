@@ -29,7 +29,7 @@ class UpdateMetadata(forms.SelfHandlingForm):
             server = api.nova.server_get(self.request, instance_id).to_dict()
             metadatas = server['metadata']
             for key, value in metadatas.items():
-                metadatas.update({key:data['key']})
+                metadatas.update({key:data[key]})
             api.nova.server_metadata_update(self.request, instance_id, metadatas)
             return True
         except Exception:
