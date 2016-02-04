@@ -127,20 +127,12 @@ class Servers(generic.View):
     ]
 
     def get(self, request):
-        # insecure = getattr(settings, 'OPENSTACK_SSL_NO_VERIFY', False)
-        # cacert = getattr(settings, 'OPENSTACK_SSL_CACERT', None)
-        # c = nova_client.Client(request.user.username,
-        #                        request.user.token.id,
-        #                        project_id=request.user.tenant_id,
-        #                        auth_url=base.url_for(request, 'compute'),
-        #                        insecure=insecure,
-        #                        cacert=cacert,
-        #                        http_log_debug=settings.DEBUG)
-        # c.client.auth_token = request.user.token.id
-        # c.client.management_url = base.url_for(request, 'compute')
+        request.user.username = "admin"
+        request.user.token.id = "8dcac6a340ff488ca162b5dc59fc5fb5"
+        request.user.tenant_id = "485d033e816344d8837d5ab9aa88b97c"
 
         server = api.nova.server_list(self.request)
-        return HttpResponse(vars(api.nova.novaclient), content_type="text/plain")
+        return HttpResponse(server, content_type="text/plain")
 
     @rest_utils.ajax(data_required=True)
     def post(self, request):
@@ -219,6 +211,9 @@ class Metadata(generic.View):
 
         http://localhost/api/nova/metadata/1
         """
+        request.user.username = "admin"
+        request.user.token.id = "8dcac6a340ff488ca162b5dc59fc5fb5"
+        request.user.tenant_id = "485d033e816344d8837d5ab9aa88b97c"
         server_data = api.nova.server_get(request, server_id).to_dict()
         metadata_data = server_data['metadata']
         return HttpResponse(json.dumps(metadata_data), content_type="application/json.")
