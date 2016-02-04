@@ -140,7 +140,7 @@ class Servers(generic.View):
         # c.client.management_url = base.url_for(request, 'compute')
 
         server = api.nova.server_list(self.request)
-        return HttpResponse(api.nova.novaclient, content_type="text/plain")
+        return HttpResponse(vars(api.nova.novaclient), content_type="text/plain")
 
     @rest_utils.ajax(data_required=True)
     def post(self, request):
