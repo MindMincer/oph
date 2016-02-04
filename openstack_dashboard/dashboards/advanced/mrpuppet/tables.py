@@ -11,8 +11,7 @@ def is_deleting(instance):
     return task_state.lower() == "deleting"
 
 def has_metadata(instance):
-    metadatas = api.nova.server_get(self.request, instance_id).to_dict()
-    return bool(metadatas['metadata'])
+    return True
 
 
 class UpdateMetadata(tables.LinkAction):
