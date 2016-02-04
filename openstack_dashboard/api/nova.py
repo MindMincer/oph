@@ -661,6 +661,14 @@ def server_update(request, instance_id, name):
     return novaclient(request).servers.update(instance_id, name=name)
 
 
+def server_metadata_update(request, instance_id, metadata):
+    novaclient(request).servers.set_meta(instance_id, metadata)
+
+
+def server_metadata_delete(request, instance_id, keys):
+    novaclient(request).servers.delete_meta(instance_id, keys)
+
+
 def server_migrate(request, instance_id):
     novaclient(request).servers.migrate(instance_id)
 

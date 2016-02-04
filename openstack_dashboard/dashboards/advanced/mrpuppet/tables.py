@@ -1,6 +1,7 @@
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import tables
+from openstack_dashboard import api
 
 
 def is_deleting(instance):
@@ -9,11 +10,27 @@ def is_deleting(instance):
         return False
     return task_state.lower() == "deleting"
 
+def has_metadata(instance):
+    metadatas = api.nova.server_get(self.request, instance_id).to_dict()
+    return metadatas
 
-class ApplyAction(tables.LinkAction):
-    name = "applyaction"
-    verbose_name = _("Apply Action")
-    url = "horizon:advanced:mrpuppet:apply_action"
+
+class UpdateMetadata(tables.LinkAction):
+    name = "updatemetadata"
+    verbose_name = _("Update Metadata")
+    url = "horizon:advanced:mrpuppet:update_metadata"
+    classes = ("ajax-modal",)
+    icon = "camera"
+
+    def allowed(self, request, instance=None):
+        return instance.status in ("ACTIVE") \
+            and not is_deleting(instance)
+            and has_metadata(instance)
+
+class AddMetadata(tables.LinkAction):
+    name = "addmetadata"
+    verbose_name = _("Add Metadata")
+    url = "horizon:advanced:mrpuppet:add_metadata"
     classes = ("ajax-modal",)
     icon = "camera"
 
@@ -36,4 +53,4 @@ class InstancesTable(tables.DataTable):
         name = "instances"
         verbose_name = _("Instances")
         table_actions = (MyFilterAction,)
-        row_actions = (ApplyAction,)
+        row_actions = (AddMetadata, UpdateMetadata,)

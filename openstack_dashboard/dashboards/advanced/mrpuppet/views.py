@@ -39,14 +39,14 @@ class IndexView(tabs.TabbedTableView):
         return context
 
 
-class ApplyActionView(forms.ModalFormView):
-    form_class = project_forms.ApplyAction
-    template_name = 'advanced/mrpuppet/apply_action.html'
+class UpdateMetadataView(forms.ModalFormView):
+    form_class = project_forms.UpdateMetadata
+    template_name = 'advanced/mrpuppet/update_metadata.html'
     success_url = reverse_lazy("horizon:advanced:mrpuppet:index")
-    modal_id = "apply_action_modal"
-    modal_header = _("Apply Action")
-    submit_label = _("Apply Action")
-    submit_url = "horizon:advanced:mrpuppet:apply_action"
+    modal_id = "update_metadata_modal"
+    modal_header = _("Update Metadata")
+    submit_label = _("Update Metadata")
+    submit_url = "horizon:advanced:mrpuppet:update_metadata"
 
     @memoized.memoized_method
     def get_object(self):
@@ -61,7 +61,36 @@ class ApplyActionView(forms.ModalFormView):
         return {"instance_id": self.kwargs["instance_id"]}
 
     def get_context_data(self, **kwargs):
-        context = super(ApplyActionView, self).get_context_data(**kwargs)
+        context = super(UpdateMetadataView, self).get_context_data(**kwargs)
+        instance_id = self.kwargs['instance_id']
+        context['instance_id'] = instance_id
+        context['instance'] = self.get_object()
+        context['submit_url'] = reverse(self.submit_url, args=[instance_id])
+        return context
+
+class AddMetadataView(forms.ModalFormView):
+    form_class = project_forms.AddMetadata
+    template_name = 'advanced/mrpuppet/add_metadata.html'
+    success_url = reverse_lazy("horizon:advanced:mrpuppet:index")
+    modal_id = "add_metadata_modal"
+    modal_header = _("Add Metadata")
+    submit_label = _("Add Metadata")
+    submit_url = "horizon:advanced:mrpuppet:add_metadata"
+
+    @memoized.memoized_method
+    def get_object(self):
+        try:
+            return api.nova.server_get(self.request,
+                                       self.kwargs["instance_id"])
+        except Exception:
+            exceptions.handle(self.request,
+                              _("Unable to retrieve instance."))
+
+    def get_initial(self):
+        return {"instance_id": self.kwargs["instance_id"]}
+
+    def get_context_data(self, **kwargs):
+        context = super(UpdateMetadataView, self).get_context_data(**kwargs)
         instance_id = self.kwargs['instance_id']
         context['instance_id'] = instance_id
         context['instance'] = self.get_object()
