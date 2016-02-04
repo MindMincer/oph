@@ -128,7 +128,7 @@ class Servers(generic.View):
 
     def get(self, request):
         server = api.nova.server_list(self.request)
-        return HttpResponse(json.dumps(server), content_type="application/json")
+        return HttpResponse(server, content_type="text/plain")
 
     @rest_utils.ajax(data_required=True)
     def post(self, request):
