@@ -8,6 +8,9 @@ from openstack_dashboard import api
 
 
 class UpdateMetadata(forms.SelfHandlingForm):
+    instance_id = forms.CharField(label=_("Instance ID"),
+                                  widget=forms.HiddenInput(),
+                                  required=False)
 
     def __init__(self, *args, **kwargs):
         super(UpdateMetadata, self).__init__(*args, **kwargs)
