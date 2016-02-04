@@ -8,11 +8,6 @@ from openstack_dashboard import api
 
 
 class UpdateMetadata(forms.SelfHandlingForm):
-    # instance_id = forms.CharField(label=_("Instance ID"),
-    #                               widget=forms.HiddenInput(),
-    #                               required=False)
-    # name = forms.CharField(max_length=255, label=_("Custom action"))
-
 
     def __init__(self, *args, **kwargs):
         super(UpdateMetadata, self).__init__(*args, **kwargs)
@@ -27,6 +22,12 @@ class UpdateMetadata(forms.SelfHandlingForm):
 
     def handle(self, request, data):
         try:
+            instance_id = data['instance_id']
+            server = api.nova.server_get(self.request, instance_id).to_dict()
+            metadatas = server['metadata']
+            for key, value in metadatas.items():
+                metadatas.update({key:value})
+            api.nova.server_metadata_update(self.request, instance_id, metadatas)
             return True
         except Exception:
             exceptions.handle(request,
@@ -43,6 +44,7 @@ class AddMetadata(forms.SelfHandlingForm):
 
     def handle(self, request, data):
         try:
+            ### TODO : check if exist
             instance_id = data['instance_id']
             server = api.nova.server_get(self.request, instance_id).to_dict()
             metadatas = server['metadata']
