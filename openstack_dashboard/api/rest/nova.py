@@ -122,10 +122,11 @@ class Servers(generic.View):
         'availability_zone', 'instance_count', 'admin_pass', 'disk_config',
         'config_drive'
     ]
+    from django.http import HttpResponse
 
     def get(self, request):
         server = api.nova.server_list(self.request)
-        return server
+        return HttpResponse(json.dumps(response_data), content_type="application/json")
 
     @rest_utils.ajax(data_required=True)
     def post(self, request):
