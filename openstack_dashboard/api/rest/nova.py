@@ -23,6 +23,8 @@ from openstack_dashboard import api
 from openstack_dashboard.api.rest import urls
 from openstack_dashboard.api.rest import utils as rest_utils
 
+import json
+
 
 @urls.register
 class Keypairs(generic.View):
