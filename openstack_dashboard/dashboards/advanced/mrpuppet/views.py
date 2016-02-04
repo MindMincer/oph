@@ -90,7 +90,7 @@ class AddMetadataView(forms.ModalFormView):
         return {"instance_id": self.kwargs["instance_id"]}
 
     def get_context_data(self, **kwargs):
-        context = super(UpdateMetadataView, self).get_context_data(**kwargs)
+        context = super(AddMetadataView, self).get_context_data(**kwargs)
         instance_id = self.kwargs['instance_id']
         context['instance_id'] = instance_id
         context['instance'] = self.get_object()
