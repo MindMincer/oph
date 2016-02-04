@@ -127,8 +127,20 @@ class Servers(generic.View):
     ]
 
     def get(self, request):
+        # insecure = getattr(settings, 'OPENSTACK_SSL_NO_VERIFY', False)
+        # cacert = getattr(settings, 'OPENSTACK_SSL_CACERT', None)
+        # c = nova_client.Client(request.user.username,
+        #                        request.user.token.id,
+        #                        project_id=request.user.tenant_id,
+        #                        auth_url=base.url_for(request, 'compute'),
+        #                        insecure=insecure,
+        #                        cacert=cacert,
+        #                        http_log_debug=settings.DEBUG)
+        # c.client.auth_token = request.user.token.id
+        # c.client.management_url = base.url_for(request, 'compute')
+
         server = api.nova.server_list(self.request)
-        return HttpResponse(server, content_type="text/plain")
+        return HttpResponse(request, content_type="text/plain")
 
     @rest_utils.ajax(data_required=True)
     def post(self, request):
