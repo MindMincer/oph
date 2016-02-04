@@ -124,7 +124,7 @@ class Servers(generic.View):
     ]
 
     def get(self, request):
-        server = api.nova.server_list(self.request).to_dict()
+        server = api.nova.server_list(self.request)
         return server
 
     @rest_utils.ajax(data_required=True)
