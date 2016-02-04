@@ -12,7 +12,7 @@ def is_deleting(instance):
 
 def has_metadata(instance):
     metadatas = api.nova.server_get(self.request, instance_id).to_dict()
-    return metadatas
+    return bool(metadatas['metadata'])
 
 
 class UpdateMetadata(tables.LinkAction):
