@@ -17,6 +17,7 @@
 
 from django.utils import http as utils_http
 from django.views import generic
+from django.http import HttpResponse
 
 from openstack_dashboard import api
 from openstack_dashboard.api.rest import urls
@@ -122,7 +123,6 @@ class Servers(generic.View):
         'availability_zone', 'instance_count', 'admin_pass', 'disk_config',
         'config_drive'
     ]
-    from django.http import HttpResponse
 
     def get(self, request):
         server = api.nova.server_list(self.request)
