@@ -17,7 +17,7 @@ class ApplyAction(forms.SelfHandlingForm):
     def __init__(self, *args, **kwargs):
         super(ApplyAction, self).__init__(*args, **kwargs)
         instance_id = kwargs.get('initial', {}).get('instance_id')
-        self.fields['instance_id'].initial = instance_id
+        # self.fields['instance_id'].initial = instance_id
         metadatas = api.nova.server_get(self.request, instance_id).to_dict()
         for key, value in metadatas['metadata']:
             self.fields[key] = forms.CharField(label=key)
