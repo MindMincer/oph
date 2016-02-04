@@ -43,9 +43,9 @@ class AddMetadata(forms.SelfHandlingForm):
 
     def handle(self, request, data):
         try:
-            instance_id = kwargs.get('initial', {}).get('instance_id')
+            instance_id = data['instance_id']
             metadatas = api.nova.server_get(self.request, instance_id).to_dict()
-            metadatas.update({self.name:self.value})
+            metadatas.update({data['name']:data['value']})
             api.nova.server_metadata_update(self.request, instance_id, metadatas)
             return True
         except Exception:
