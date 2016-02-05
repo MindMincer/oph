@@ -87,7 +87,7 @@ class AddENCMetadata(forms.SelfHandlingForm):
         classes = {"class1":4, "class2":6, "class3":2}
         for the_class, count in classes.items():
             for i in xrange(count):
-                self.fields[the_class+"{}".format(i)] = forms.CharField(label=the_classl)
+                self.fields[the_class+"{}".format(i)] = forms.CharField(label=the_class)
                 self.fields[the_class+"{}".format(i)].required = True
                 self.fields[the_class+"{}".format(i)].help_text = the_class
                 self.fields[the_class+"{}".format(i)].initial = the_class +"{}".format(i) + "param"
