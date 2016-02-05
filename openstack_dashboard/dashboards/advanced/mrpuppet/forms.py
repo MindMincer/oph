@@ -57,3 +57,36 @@ class AddMetadata(forms.SelfHandlingForm):
         except Exception:
             exceptions.handle(request,
                               _('Unable to add metadata.'))
+
+
+class AddENCMetadata(forms.SelfHandlingForm):
+    instance_id = forms.CharField(label=_("Instance ID"),
+                                  widget=forms.HiddenInput(),
+                                  required=False)
+    classes = forms.ChoiceField(label=_("New Class"),
+                             help_text=_("Choose a Class to add."))
+
+    def __init__(self, request, *args, **kwargs):
+        super(AddENCMetadata, self).__init__(request, *args, **kwargs)
+        initial = kwargs.get('initial', {})
+        instance_id = initial.get('instance_id')
+        self.fields['instance_id'] = forms.CharField(widget=forms.HiddenInput,
+                                                     initial=instance_id)
+        self.fields['host'].choices = self.populate_classes_choices()
+
+    def populate_classes_choices(self):
+        classes_list = ["class1", "class2", "class3"]
+        return sorted(classes_list)
+
+    def handle(self, request, data):
+        try:
+            ### TODO : check if exist
+            # instance_id = data['instance_id']
+            # server = api.nova.server_get(self.request, instance_id).to_dict()
+            # metadatas = server['metadata']
+            # metadatas.update({data['name']:data['value']})
+            # api.nova.server_metadata_update(self.request, instance_id, metadatas)
+            return True
+        except Exception:
+            exceptions.handle(request,
+                              _('Unable to add metadata.'))

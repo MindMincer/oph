@@ -42,6 +42,17 @@ class AddMetadata(tables.LinkAction):
         return instance.status in ("ACTIVE") \
             and not is_deleting(instance)
 
+class AddENCMetadata(tables.LinkAction):
+    name = "addencmetadata"
+    verbose_name = _("Add ENC Metadata")
+    url = "horizon:advanced:mrpuppet:add_enc_metadata"
+    classes = ("ajax-modal",)
+    icon = "camera"
+
+    def allowed(self, request, instance=None):
+        return instance.status in ("ACTIVE") \
+            and not is_deleting(instance)
+
 
 class MyFilterAction(tables.FilterAction):
     name = "myfilter"
@@ -57,4 +68,4 @@ class InstancesTable(tables.DataTable):
         name = "instances"
         verbose_name = _("Instances")
         table_actions = (MyFilterAction,)
-        row_actions = (AddMetadata, UpdateMetadata,)
+        row_actions = (AddMetadata, UpdateMetadata, AddENCMetadata)

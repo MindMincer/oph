@@ -96,3 +96,33 @@ class AddMetadataView(forms.ModalFormView):
         context['instance'] = self.get_object()
         context['submit_url'] = reverse(self.submit_url, args=[instance_id])
         return context
+
+
+class AddENCMetadataView(forms.ModalFormView):
+    form_class = project_forms.AddENCMetadata
+    template_name = 'advanced/mrpuppet/add_enc_metadata.html'
+    success_url = reverse_lazy("horizon:advanced:mrpuppet:index")
+    modal_id = "add_enc_metadata_modal"
+    modal_header = _("Add ENC Metadata")
+    submit_label = _("Add ENC Metadata")
+    submit_url = "horizon:advanced:mrpuppet:add_enc_metadata"
+
+    @memoized.memoized_method
+    def get_object(self):
+        try:
+            return api.nova.server_get(self.request,
+                                       self.kwargs["instance_id"])
+        except Exception:
+            exceptions.handle(self.request,
+                              _("Unable to retrieve instance."))
+
+    def get_initial(self):
+        return {"instance_id": self.kwargs["instance_id"]}
+
+    def get_context_data(self, **kwargs):
+        context = super(AddENCMetadataView, self).get_context_data(**kwargs)
+        instance_id = self.kwargs['instance_id']
+        context['instance_id'] = instance_id
+        context['instance'] = self.get_object()
+        context['submit_url'] = reverse(self.submit_url, args=[instance_id])
+        return context
