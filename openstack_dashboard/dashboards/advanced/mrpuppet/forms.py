@@ -72,7 +72,7 @@ class AddENCMetadata(forms.SelfHandlingForm):
         instance_id = initial.get('instance_id')
         self.fields['instance_id'] = forms.CharField(widget=forms.HiddenInput,
                                                      initial=instance_id)
-        self.fields['host'].choices = self.populate_classes_choices()
+        self.fields['classes'].choices = self.populate_classes_choices()
 
     def populate_classes_choices(self):
         classes_list = ["class1", "class2", "class3"]
