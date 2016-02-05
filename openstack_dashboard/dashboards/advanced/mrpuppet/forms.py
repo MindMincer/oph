@@ -63,18 +63,10 @@ class AddENCMetadata(forms.SelfHandlingForm):
     instance_id = forms.CharField(label=_("Instance ID"),
                                   widget=forms.HiddenInput(),
                                   required=False)
-    attributes = {'class': 'switchable', 'data-slug': 'scriptsource'}
+    attributes = {'class': 'switchable', 'data-slug': 'classessource'}
     classes = forms.ChoiceField(label=_('New Class'), help_text=_("Choose a Class to add."),
                                       widget=forms.Select(attrs=attributes),
                                       required=False)
-    # script_data = forms.CharField(
-    #     label=_('Script Data'),
-    #     help_text=script_help,
-    #     widget=forms.widgets.Textarea(attrs={
-    #         'class': 'switched',
-    #         'data-switch-on': 'scriptsource',
-    #         'data-scriptsource-raw': _('Script Data')}),
-    #     required=False)
 
     def __init__(self, request, *args, **kwargs):
         super(AddENCMetadata, self).__init__(request, *args, **kwargs)
@@ -84,20 +76,26 @@ class AddENCMetadata(forms.SelfHandlingForm):
                                                      initial=instance_id)
         self.fields['classes'].choices = self.populate_classes_choices()
 
-        classes = {"class1":4, "class2":6, "class3":2}
+        classes = self.populate_args_choices()#{"class1":4, "class2":6, "class3":2}
         for the_class, count in classes.items():
             for i in xrange(count):
                 self.fields[the_class+"{}".format(i)] = forms.CharField(label=the_class)
                 self.fields[the_class+"{}".format(i)].required = True
                 self.fields[the_class+"{}".format(i)].help_text = the_class
-                self.fields[the_class+"{}".format(i)].initial = the_class +"{}".format(i) + "param"
+                self.fields[the_class+"{}".format(i)].initial = the_class + "param" + "{}".format(i)
                 self.fields[the_class+"{}".format(i)].widget.attrs = {'class': 'switched',
-                                                        'data-switch-on': 'scriptsource',
-                                                        'data-scriptsource-' + the_class: _('Script Data')}
+                                                        'data-switch-on': 'classessource',
+                                                        'data-classessource-' + the_class: _('Classes Data')}
 
     def populate_classes_choices(self):
-        classes_list = [("class1","meta class 1"), ("class2","meta class 2"), ("class3","meta class 3")]
+        classes_list = ['', _('Select Metadata Class'), ("class1","meta class 1"), ("class2","meta class 2"), ("class3","meta class 3")]
         return sorted(classes_list)
+
+    def populate_args_choices(self):
+        args_choices = {"class1":{""}},
+                        "class2":6,
+                        "class3":2}
+        return args_choices
 
     def handle(self, request, data):
         try:
