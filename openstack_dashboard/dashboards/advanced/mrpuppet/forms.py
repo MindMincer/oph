@@ -64,7 +64,7 @@ class AddENCMetadata(forms.SelfHandlingForm):
                                   widget=forms.HiddenInput(),
                                   required=False)
     attributes = {'class': 'switchable', 'data-slug': 'scriptsource'}
-    classes = forms.ChoiceField(label=_('New Class'), help_text=_("Choose a Class to add.")
+    classes = forms.ChoiceField(label=_('New Class'), help_text=_("Choose a Class to add."),
                                       widget=forms.Select(attrs=attributes),
                                       required=False)
     # script_data = forms.CharField(
