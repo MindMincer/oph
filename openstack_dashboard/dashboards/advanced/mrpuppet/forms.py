@@ -75,7 +75,7 @@ class AddENCMetadata(forms.SelfHandlingForm):
         self.fields['classes'].choices = self.populate_classes_choices()
 
     def populate_classes_choices(self):
-        classes_list = ["class1", "class2", "class3"]
+        classes_list = [("class1","c1"), ("class2","c2"), ("class3","c3")]
         return sorted(classes_list)
 
     def handle(self, request, data):
