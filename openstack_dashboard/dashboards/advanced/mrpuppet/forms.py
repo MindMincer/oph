@@ -93,7 +93,7 @@ class AddENCMetadata(forms.SelfHandlingForm):
                 self.fields[the_class+"{}".format(i)].initial = the_class +"{}".format(i) + "param"
                 self.fields[the_class+"{}".format(i)].widget.attrs = {'class': 'switched',
                                                         'data-switch-on': 'scriptsource',
-                                                        'data-scriptsource' + the_class: _('Script Data')}
+                                                        'data-scriptsource-' + the_class: _('Script Data')}
 
     def populate_classes_choices(self):
         classes_list = [("class1","meta class 1"), ("class2","meta class 2"), ("class3","meta class 3")]
