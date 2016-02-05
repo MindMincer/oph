@@ -63,8 +63,18 @@ class AddENCMetadata(forms.SelfHandlingForm):
     instance_id = forms.CharField(label=_("Instance ID"),
                                   widget=forms.HiddenInput(),
                                   required=False)
-    classes = forms.ChoiceField(label=_("New Class"),
-                             help_text=_("Choose a Class to add."))
+    attributes = {'class': 'switchable', 'data-slug': 'scriptsource'}
+    classes = forms.ChoiceField(label=_('New Class'), help_text=_("Choose a Class to add.")
+                                      widget=forms.Select(attrs=attributes),
+                                      required=False)
+    # script_data = forms.CharField(
+    #     label=_('Script Data'),
+    #     help_text=script_help,
+    #     widget=forms.widgets.Textarea(attrs={
+    #         'class': 'switched',
+    #         'data-switch-on': 'scriptsource',
+    #         'data-scriptsource-raw': _('Script Data')}),
+    #     required=False)
 
     def __init__(self, request, *args, **kwargs):
         super(AddENCMetadata, self).__init__(request, *args, **kwargs)
@@ -74,8 +84,20 @@ class AddENCMetadata(forms.SelfHandlingForm):
                                                      initial=instance_id)
         self.fields['classes'].choices = self.populate_classes_choices()
 
+        classes = {"class1":4, "class2":6, "class3":2}
+        for the_class, count in classes.items():
+            i = 0
+            for i in xrange(count):
+                self.fields[the_class+i] = forms.CharField(label=key)
+                self.fields[the_class+i].required = True
+                self.fields[the_class+i].help_text = key
+                self.fields[the_class+i].initial = the_class + i + "param"
+                self.fields[the_class+i].widget.attrs = {'class': 'switched',
+                                                        'data-switch-on': 'scriptsource',
+                                                        'data-scriptsource' + the_class: _('Script Data')}
+
     def populate_classes_choices(self):
-        classes_list = [("class1","c1"), ("class2","c2"), ("class3","c3")]
+        classes_list = [("class1","meta class 1"), ("class2","meta class 2"), ("class3","meta class 3")]
         return sorted(classes_list)
 
     def handle(self, request, data):
