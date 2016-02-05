@@ -92,9 +92,9 @@ class AddENCMetadata(forms.SelfHandlingForm):
         return sorted(classes_list)
 
     def populate_args_choices(self):
-        args_choices = {"class1": {"Param11":"param 1 var", "Param12":"param 2 var", "Param13":"param 3 var", "Param14":"param 4 var"},
-                        "class2": {"Param21":"param 1 var", "Param22":"param 2 var", "Param23":"param 3 var", "Param24":"param 4 var", "Param25":"param 5 var", "Param26":"param 6 var"},
-                        "class3": {"Param31":"param 1 var", "Param32":"param 2 var"}}
+        args_choices = {"class1": {"Param11":"param 1 var for class 1", "Param12":"param 2 var for class 1", "Param13":"param 3 var for class 1", "Param14":"param 4 var for class 1"},
+                        "class2": {"Param21":"param 1 var for class 2", "Param22":"param 2 var for class 2", "Param23":"param 3 var for class 2", "Param24":"param 4 var for class 2", "Param25":"param 5 var for class 2", "Param26":"param 6 var for class 2"},
+                        "class3": {"Param31":"param 1 var for class 3", "Param32":"param 2 var for class 3"}}
         return args_choices
 
     def handle(self, request, data):
