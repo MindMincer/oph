@@ -127,9 +127,11 @@ class Servers(generic.View):
     ]
 
     def get(self, request):
+        class Object(object):
+            pass
         request.user.username = "admin"
-        request.user.token = {"id":"8dcac6a340ff488ca162b5dc59fc5fb5"}
-        # request.user.token.id = "8dcac6a340ff488ca162b5dc59fc5fb5"
+        request.user.token = Object()
+        request.user.token.id = "8dcac6a340ff488ca162b5dc59fc5fb5"
         request.user.tenant_id = "485d033e816344d8837d5ab9aa88b97c"
 
         server = api.nova.server_list(self.request)
@@ -212,10 +214,13 @@ class Metadata(generic.View):
 
         http://localhost/api/nova/metadata/1
         """
+        class Object(object):
+            pass
         request.user.username = "admin"
-        request.user.token = {"id":"8dcac6a340ff488ca162b5dc59fc5fb5"}
-        # request.user.token.id = "8dcac6a340ff488ca162b5dc59fc5fb5"
+        request.user.token = Object()
+        request.user.token.id = "8dcac6a340ff488ca162b5dc59fc5fb5"
         request.user.tenant_id = "485d033e816344d8837d5ab9aa88b97c"
+        
         server_data = api.nova.server_get(request, server_id).to_dict()
         metadata_data = server_data['metadata']
         return HttpResponse(json.dumps(metadata_data), content_type="application/json.")
