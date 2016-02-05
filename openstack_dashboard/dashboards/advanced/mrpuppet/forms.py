@@ -88,9 +88,9 @@ class AddENCMetadata(forms.SelfHandlingForm):
         for the_class, count in classes.items():
             i = 0
             for i in xrange(count):
-                self.fields[the_class+i] = forms.CharField(label=key)
+                self.fields[the_class+i] = forms.CharField(label=the_class)
                 self.fields[the_class+i].required = True
-                self.fields[the_class+i].help_text = key
+                self.fields[the_class+i].help_text = the_class
                 self.fields[the_class+i].initial = the_class + i + "param"
                 self.fields[the_class+i].widget.attrs = {'class': 'switched',
                                                         'data-switch-on': 'scriptsource',
