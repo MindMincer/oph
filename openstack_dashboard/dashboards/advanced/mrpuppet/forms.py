@@ -88,7 +88,7 @@ class AddENCMetadata(forms.SelfHandlingForm):
                                                         'data-classessource-' + the_class: _('Classes Data')}
 
     def populate_classes_choices(self):
-        classes_list = ['', _('Select Metadata Class'), ("class1","meta class 1"), ("class2","meta class 2"), ("class3","meta class 3")]
+        classes_list = [('', _('Select Metadata Class')), ("class1","meta class 1"), ("class2","meta class 2"), ("class3","meta class 3")]
         return sorted(classes_list)
 
     def populate_args_choices(self):
