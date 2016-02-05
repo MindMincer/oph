@@ -77,13 +77,13 @@ class AddENCMetadata(forms.SelfHandlingForm):
         self.fields['classes'].choices = self.populate_classes_choices()
 
         classes = self.populate_args_choices()#{"class1":4, "class2":6, "class3":2}
-        for the_class, count in classes.items():
-            for i in xrange(count):
-                self.fields[the_class+"{}".format(i)] = forms.CharField(label=the_class)
-                self.fields[the_class+"{}".format(i)].required = True
-                self.fields[the_class+"{}".format(i)].help_text = the_class
-                self.fields[the_class+"{}".format(i)].initial = the_class + "param" + "{}".format(i)
-                self.fields[the_class+"{}".format(i)].widget.attrs = {'class': 'switched',
+        for the_class, params in classes.items():
+            for param, var in params.items():
+                self.fields[the_class + param] = forms.CharField(label=param)
+                self.fields[the_class + param].required = True
+                self.fields[the_class + param].help_text = param
+                self.fields[the_class + param].initial = var
+                self.fields[the_class + param].widget.attrs = {'class': 'switched',
                                                         'data-switch-on': 'classessource',
                                                         'data-classessource-' + the_class: _('Classes Data')}
 
@@ -92,9 +92,9 @@ class AddENCMetadata(forms.SelfHandlingForm):
         return sorted(classes_list)
 
     def populate_args_choices(self):
-        args_choices = {"class1":{""}},
-                        "class2":6,
-                        "class3":2}
+        args_choices = {"class1": {"Param11":"param 1 var", "Param12":"param 2 var", "Param13":"param 3 var", "Param14":"param 4 var"}},
+                        "class2": {"Param21":"param 1 var", "Param22":"param 2 var", "Param23":"param 3 var", "Param24":"param 4 var", "Param25":"param 5 var", "Param26":"param 6 var"},
+                        "class3": {"Param31":"param 1 var", "Param32":"param 2 var"}}
         return args_choices
 
     def handle(self, request, data):
