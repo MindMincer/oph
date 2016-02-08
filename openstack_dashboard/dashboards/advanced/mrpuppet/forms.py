@@ -63,37 +63,35 @@ class AddMetadata(forms.SelfHandlingForm):
                               _('Unable to add metadata.'))
 
 
-# class UpdateENCMetadata(forms.SelfHandlingForm):
-#     instance_id = forms.CharField(label=_("Instance ID"),
-#                                   widget=forms.HiddenInput(),
-#                                   required=False)
+class EditENCMetadata(forms.SelfHandlingForm):
+    instance_id = forms.CharField(label=_("Instance ID"),
+                                  widget=forms.HiddenInput(),
+                                  required=False)
 
-    
+    def populate_params_of_the_class(self, class_name):
+        classes = AddENCMetadata.populate_args_choices(self, self.instance_id)
+        return classes[class_name]
 
-#     def populate_params_of_the_class(self, class_name):
-#         classes = AddENCMetadata.populate_args_choices(self, self.instance_id)
-#         return classes[class_name]
+    def __init__(self, request, *args, **kwargs):
+        super(EditENCMetadata, self).__init__(request, *args, **kwargs)
+        initial = kwargs.get('initial', {})
+        instance_id = initial.get('instance_id')
+        self.fields['instance_id'] = forms.CharField(widget=forms.HiddenInput,
+                                                     initial=instance_id)
+        class_name = initial.get('class_name')
+        params_of_the_class = self.populate_params_of_the_class(class_name)
+        for key, value in params_of_the_class.items():
+            self.fields[key] = forms.CharField(label=key)
+            self.fields[key].required = True
+            self.fields[key].help_text = key
+            self.fields[key].initial = value
 
-#     def __init__(self, request, *args, **kwargs):
-#         super(UpdateENCMetadata, self).__init__(request, *args, **kwargs)
-#         initial = kwargs.get('initial', {})
-#         instance_id = initial.get('instance_id')
-#         self.fields['instance_id'] = forms.CharField(widget=forms.HiddenInput,
-#                                                      initial=instance_id)
-#         class_name = "class1"
-#         params_of_the_class = self.populate_params_of_the_class(class_name)
-#         for key, value in params_of_the_class.items():
-#             self.fields[key] = forms.CharField(label=key)
-#             self.fields[key].required = True
-#             self.fields[key].help_text = key
-#             self.fields[key].initial = value
-
-#     def handle(self, request, data):
-#         try:
-#             return True
-#         except Exception:
-#             exceptions.handle(request,
-#                               _('Unable to add metadata.'))
+    def handle(self, request, data):
+        try:
+            return True
+        except Exception:
+            exceptions.handle(request,
+                              _('Unable to add metadata.'))
 
 
 class EditENCButtonWidget(forms.Widget):
