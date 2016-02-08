@@ -68,8 +68,10 @@ class EditENCMetadata(forms.SelfHandlingForm):
                                   widget=forms.HiddenInput(),
                                   required=False)
 
-    def populate_params_of_the_class(self, instance_id, class_name):
-        classes = AddENCMetadata.populate_args_choices(self, instance_id)
+    def populate_params_of_the_class(self, class_name):
+        classes = {"class1": {"Param11":"param 1 var for class 1", "Param12":"param 2 var for class 1", "Param13":"param 3 var for class 1", "Param14":"param 4 var for class 1"},
+                        "class2": {"Param21":"param 1 var for class 2", "Param22":"param 2 var for class 2", "Param23":"param 3 var for class 2", "Param24":"param 4 var for class 2", "Param25":"param 5 var for class 2", "Param26":"param 6 var for class 2"},
+                        "class3": {"Param31":"param 1 var for class 3", "Param32":"param 2 var for class 3"}}
         return classes[class_name]
 
     def __init__(self, request, *args, **kwargs):
@@ -79,7 +81,7 @@ class EditENCMetadata(forms.SelfHandlingForm):
         self.fields['instance_id'] = forms.CharField(widget=forms.HiddenInput,
                                                      initial=instance_id)
         class_name = initial.get('class_name')
-        params_of_the_class = self.populate_params_of_the_class(instance_id, class_name)
+        params_of_the_class = self.populate_params_of_the_class(class_name)
         for key, value in params_of_the_class.items():
             self.fields[key] = forms.CharField(label=key)
             self.fields[key].required = True
