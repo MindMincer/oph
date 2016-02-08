@@ -107,7 +107,7 @@ class EditEncClassView(forms.ModalFormView):
     submit_label = _("Add Metadata")
     submit_url = "horizon:advanced:mrpuppet:edit_enc_metadata"
 
-    def get_object_display(self, obj):
+    def get_object(self):
         try:
             server_data = api.nova.server_get(self.request,
                                        self.kwargs["instance_id"])
