@@ -76,17 +76,17 @@ class EditENCMetadata(forms.SelfHandlingForm):
 
     def __init__(self, request, *args, **kwargs):
         super(EditENCMetadata, self).__init__(request, *args, **kwargs)
-        # initial = kwargs.get('initial', {})
-        # instance_id = initial.get('instance_id')
-        # self.fields['instance_id'] = forms.CharField(widget=forms.HiddenInput,
-        #                                              initial=instance_id)
-        # class_name = initial.get('class_name')
-        # params_of_the_class = self.populate_params_of_the_class(class_name)
-        # for key, value in params_of_the_class.items():
-        #     self.fields[key] = forms.CharField(label=key)
-        #     self.fields[key].required = True
-        #     self.fields[key].help_text = key
-        #     self.fields[key].initial = value
+        initial = kwargs.get('initial', {})
+        instance_id = initial.get('instance_id')
+        self.fields['instance_id'] = forms.CharField(widget=forms.HiddenInput,
+                                                     initial=instance_id)
+        class_name = initial.get('class_name')
+        params_of_the_class = self.populate_params_of_the_class(class_name)
+        for key, value in params_of_the_class.items():
+            self.fields[key] = forms.CharField(label=key)
+            self.fields[key].required = True
+            self.fields[key].help_text = key
+            self.fields[key].initial = value
 
     def handle(self, request, data):
         try:
@@ -100,7 +100,7 @@ class EditENCButtonWidget(forms.Widget):
     submit_url = "horizon:advanced:mrpuppet:edit_enc_metadata"
     def render(self, name, value, attrs=None):
         instance_id = value
-        url = reverse_lazy(self.submit_url, kwargs={'instance_id': instance_id, "class_name":name})
+        url = reverse(self.submit_url, kwargs={'instance_id': instance_id, "class_name":name})
         return mark_safe('{1}<a href="{0}" class="btn btn-default btn btn-default ajax-add ajax-modal"><i class="fa fa-pencil-square-o"></i></a>'.format(url,name))
 
 
