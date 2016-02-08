@@ -115,10 +115,7 @@ class AddENCMetadata(forms.SelfHandlingForm):
     instance_id = forms.CharField(label=_("Instance ID"),
                                   widget=forms.HiddenInput(),
                                   required=False)
-    attributes = {'class': 'switchable', 'data-slug': 'classessource'}
-    classes = forms.ChoiceField(label=_('New Class'), help_text=_("Choose a Class to add."),
-                                      widget=forms.Select(attrs=attributes),
-                                      required=False)
+    
 
     def __init__(self, request, *args, **kwargs):
         super(AddENCMetadata, self).__init__(request, *args, **kwargs)
@@ -132,22 +129,27 @@ class AddENCMetadata(forms.SelfHandlingForm):
                                                     label = "",
                                                     required=False)
 
-        self.fields["add_new"] = forms.CharField(widget=AddENCButtonWidget(),
-                                                    label = "",
-                                                    required=False,
-                                                    initial = instance_id)
+        # self.fields["add_new"] = forms.CharField(widget=AddENCButtonWidget(),
+        #                                             label = "",
+        #                                             required=False,
+        #                                             initial = instance_id)
 
-        # self.fields['classes'].choices = self.populate_classes_choices()
-        # classes = self.populate_args_choices()
-        # for the_class, params in classes.items():
-        #     for param, var in params.items():
-        #         self.fields[the_class + param] = forms.CharField(label=param)
-        #         self.fields[the_class + param].required = True
-        #         self.fields[the_class + param].help_text = param
-        #         self.fields[the_class + param].initial = var
-        #         self.fields[the_class + param].widget.attrs = {'class': 'switched',
-        #                                                 'data-switch-on': 'classessource',
-        #                                                 'data-classessource-' + the_class: param}
+        attributes = {'class': 'switchable', 'data-slug': 'classessource'}
+        self.fields['classes'] = forms.ChoiceField(label=_('New Class'), help_text=_("Choose a Class to add."),
+                                      widget=forms.Select(attrs=attributes),
+                                      required=False)
+
+        self.fields['classes'].choices = self.populate_classes_choices()
+        classes = self.populate_args_choices()
+        for the_class, params in classes.items():
+            for param, var in params.items():
+                self.fields[the_class + param] = forms.CharField(label=param)
+                self.fields[the_class + param].required = True
+                self.fields[the_class + param].help_text = param
+                self.fields[the_class + param].initial = var
+                self.fields[the_class + param].widget.attrs = {'class': 'switched',
+                                                        'data-switch-on': 'classessource',
+                                                        'data-classessource-' + the_class: param}
 
     def get_current_classes(self):
         # instance_id = self.instance_id

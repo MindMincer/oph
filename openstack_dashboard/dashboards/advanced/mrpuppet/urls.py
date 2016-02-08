@@ -23,5 +23,5 @@ urlpatterns = patterns(
     url(INSTANCES % 'add_metadata', views.AddMetadataView.as_view(), name='add_metadata'),
     url(INSTANCES % 'update_metadata', views.UpdateMetadataView.as_view(), name='update_metadata'),
     url(INSTANCES % 'add_enc_metadata', views.AddENCMetadataView.as_view(), name='add_enc_metadata'),
-    url(INSTANCES % 'edit_enc_class', views.EditEncClassView.as_view(), name='edit_enc_metadata'),
+    url(INSTANCES % 'edit_enc_metadata', views.EditEncClassView.as_view(), name='edit_enc_metadata'),
 )
