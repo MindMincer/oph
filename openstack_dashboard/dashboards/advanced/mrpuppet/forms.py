@@ -104,7 +104,7 @@ class EditENCButtonWidget(forms.Widget):
 
 
 class AddENCButtonWidget(forms.Widget):
-    self.url = "horizon:advanced:mrpuppet:add_enc_metadata"
+    submit_url = "horizon:advanced:mrpuppet:add_enc_metadata"
     # EDIT_ENC_URL = "horizon:advanced:mrpuppet:edit_enc_class"
     def render(self, name, value, attrs=None):
         instance_id = value
