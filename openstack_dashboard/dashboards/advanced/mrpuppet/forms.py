@@ -98,12 +98,12 @@ class AddMetadata(forms.SelfHandlingForm):
 
 class EditENCButtonWidget(forms.Widget):
     # EDIT_ENC_URL = "horizon:advanced:mrpuppet:edit_enc_class"
-    def render(self, value, attrs=None):
+    def render(self, value):
         url = "/horizon/advanced/"
         return '<a href="{}" class="btn btn-default"><i class="fa fa-pencil-square-o"></i></a>'.format(url)
 
 class PlainTextWidget(forms.Widget):
-    def render(self, value, attrs):
+    def render(self, value):
         return mark_safe(value) if value is not None else '-'
 
 class AddENCMetadata(forms.SelfHandlingForm):
