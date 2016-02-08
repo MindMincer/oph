@@ -100,11 +100,7 @@ class EditENCButtonWidget(forms.Widget):
     # EDIT_ENC_URL = "horizon:advanced:mrpuppet:edit_enc_class"
     def render(self, name, value, attrs=None):
         url = "/horizon/advanced/"
-        return mark_safe('<a href="{}" class="btn btn-default"><i class="fa fa-pencil-square-o"></i></a>'.format(url))
-
-class PlainTextWidget(forms.Widget):
-    def render(self, name, value, attrs=None):
-        return mark_safe(value) if value is not None else '-'
+        return mark_safe('<a href="{1}" class="btn btn-default">{2}{3}{4}<i class="fa fa-pencil-square-o"></i></a>'.format(url, value, name, attrs))
 
 class AddENCMetadata(forms.SelfHandlingForm):
     instance_id = forms.CharField(label=_("Instance ID"),
@@ -123,7 +119,6 @@ class AddENCMetadata(forms.SelfHandlingForm):
                                                      initial=instance_id)
         current_classes = self.get_current_classes()
         for the_class in current_classes:
-            self.fields[the_class] = forms.CharField(widget=PlainTextWidget(), initial=the_class)
             self.fields[the_class+"_edit"] = forms.CharField(widget=EditENCButtonWidget(), initial=the_class)
 
         self.fields['classes'].choices = self.populate_classes_choices()
