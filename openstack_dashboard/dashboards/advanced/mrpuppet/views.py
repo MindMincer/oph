@@ -28,7 +28,7 @@ from openstack_dashboard.dashboards.advanced.mrpuppet \
 from openstack_dashboard.dashboards.advanced.mrpuppet \
     import tabs as advanced_tabs
 
-from openstack_dashboard.dashboards..advanced.mrpuppet \
+from openstack_dashboard.dashboards.advanced.mrpuppet \
     import workflows as project_workflows
 
 
