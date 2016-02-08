@@ -103,6 +103,16 @@ class EditENCButtonWidget(forms.Widget):
         return mark_safe('{1}<a href="{0}" class="btn btn-default"><i class="fa fa-pencil-square-o"></i></a>'.format(url,name))
 
 
+class AddENCButtonWidget(forms.Widget):
+    self.url = "horizon:advanced:mrpuppet:add_enc_metadata"
+    # EDIT_ENC_URL = "horizon:advanced:mrpuppet:edit_enc_class"
+    def render(self, name, value, attrs=None):
+        instance_id = value
+        url = reverse(self.submit_url, args=[instance_id])
+        text = "Or you maay add new class"
+        return mark_safe('{1}<a href="{0}" class="btn btn-default"><i class="fa fa-plus"></i></a>'.format(url,text))
+
+
 class AddENCMetadata(forms.SelfHandlingForm):
     instance_id = forms.CharField(label=_("Instance ID"),
                                   widget=forms.HiddenInput(),
@@ -124,17 +134,22 @@ class AddENCMetadata(forms.SelfHandlingForm):
                                                     label = "",
                                                     required=False)
 
-        self.fields['classes'].choices = self.populate_classes_choices()
-        classes = self.populate_args_choices()
-        for the_class, params in classes.items():
-            for param, var in params.items():
-                self.fields[the_class + param] = forms.CharField(label=param)
-                self.fields[the_class + param].required = True
-                self.fields[the_class + param].help_text = param
-                self.fields[the_class + param].initial = var
-                self.fields[the_class + param].widget.attrs = {'class': 'switched',
-                                                        'data-switch-on': 'classessource',
-                                                        'data-classessource-' + the_class: param}
+        self.fields["add_new"] = forms.CharField(widget=AddENCMetadata(),
+                                                    label = "",
+                                                    required=False,
+                                                    initial = "instance_id")
+
+        # self.fields['classes'].choices = self.populate_classes_choices()
+        # classes = self.populate_args_choices()
+        # for the_class, params in classes.items():
+        #     for param, var in params.items():
+        #         self.fields[the_class + param] = forms.CharField(label=param)
+        #         self.fields[the_class + param].required = True
+        #         self.fields[the_class + param].help_text = param
+        #         self.fields[the_class + param].initial = var
+        #         self.fields[the_class + param].widget.attrs = {'class': 'switched',
+        #                                                 'data-switch-on': 'classessource',
+        #                                                 'data-classessource-' + the_class: param}
 
     def get_current_classes(self):
         # instance_id = self.instance_id
