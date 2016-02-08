@@ -1,4 +1,4 @@
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
@@ -100,7 +100,7 @@ class EditENCButtonWidget(forms.Widget):
     submit_url = "horizon:advanced:mrpuppet:edit_enc_metadata"
     def render(self, name, value, attrs=None):
         instance_id = value
-        url = reverse(self.submit_url, kwargs={'instance_id': instance_id, "class_name":name})
+        url = reverse_lazy(self.submit_url, kwargs={'instance_id': instance_id, "class_name":name})
         return mark_safe('{1}<a href="{0}" class="btn btn-default"><i class="fa fa-pencil-square-o"></i></a>'.format(url,name))
 
 
