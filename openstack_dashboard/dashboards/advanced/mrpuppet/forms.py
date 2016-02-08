@@ -92,8 +92,8 @@ class EditENCMetadata(forms.SelfHandlingForm):
     def handle(self, request, data):
         try:
             messages.success(request,
-                             _('Class "%s" was successfully updated.')
-                             % data['class_name'])
+                             _('Class was successfully updated.')
+                            )
             return True
         except Exception:
             exceptions.handle(request,
