@@ -102,6 +102,13 @@ class EditENCButtonWidget(forms.Widget):
         url = "/horizon/advanced/"
         return mark_safe('<a href="{0}" class="btn btn-default"><i class="fa fa-pencil-square-o"></i></a>'.format(url))
 
+
+class EditENCButtonsField(forms.Field):
+  def formfield(self, **kwargs):
+    kwargs['widget'] = EditENCButtonWidget
+    return super(EditENCButtonsField, self).formfield(**kwargs)
+
+
 class AddENCMetadata(forms.SelfHandlingForm):
     instance_id = forms.CharField(label=_("Instance ID"),
                                   widget=forms.HiddenInput(),
@@ -119,7 +126,7 @@ class AddENCMetadata(forms.SelfHandlingForm):
                                                      initial=instance_id)
         current_classes = self.get_current_classes()
         for the_class in current_classes:
-            self.fields[the_class] = EditENCButtonWidget()
+            self.fields[the_class] = EditENCButtonsField()
 
         self.fields['classes'].choices = self.populate_classes_choices()
         classes = self.populate_args_choices()
