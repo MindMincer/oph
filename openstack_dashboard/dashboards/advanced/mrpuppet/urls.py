@@ -16,7 +16,7 @@ from django.conf.urls import url
 from openstack_dashboard.dashboards.advanced.mrpuppet import views 
 
 INSTANCES = r'^(?P<instance_id>[^/]+)/%s$'
-INSTANCE_ENCCLASS = r'^(?P<instance_id>[^/]+)/(?P<class_name>[^/]+)/%s$'
+INSTANCE_ENCCLASS = r'^(?P<instance_id>[^/]+)/%s/(?P<class_name>[^/]+)$'
 
 urlpatterns = patterns(
 	'openstack_dashboard.dashboards.advanced.mrpuppet.views',
