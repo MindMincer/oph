@@ -137,7 +137,7 @@ class AddENCMetadata(forms.SelfHandlingForm):
         self.fields["add_new"] = forms.CharField(widget=AddENCButtonWidget(),
                                                     label = "",
                                                     required=False,
-                                                    initial = "instance_id")
+                                                    initial = instance_id)
 
         # self.fields['classes'].choices = self.populate_classes_choices()
         # classes = self.populate_args_choices()
