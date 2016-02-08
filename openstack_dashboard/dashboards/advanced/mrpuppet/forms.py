@@ -72,7 +72,7 @@ class EditENCMetadata(forms.SelfHandlingForm):
         classes = {"class12": {"Param11":"param 1 var for class 1", "Param12":"param 2 var for class 1", "Param13":"param 3 var for class 1", "Param14":"param 4 var for class 1"},
                         "class22": {"Param21":"param 1 var for class 2", "Param22":"param 2 var for class 2", "Param23":"param 3 var for class 2", "Param24":"param 4 var for class 2", "Param25":"param 5 var for class 2", "Param26":"param 6 var for class 2"},
                         "class32": {"Param31":"param 1 var for class 3", "Param32":"param 2 var for class 3"}}
-        return classes["class12"]
+        return classes[class_name]
 
     def __init__(self, request, *args, **kwargs):
         super(EditENCMetadata, self).__init__(request, *args, **kwargs)
@@ -101,7 +101,10 @@ class EditENCButtonWidget(forms.Widget):
     def render(self, name, value, attrs=None):
         instance_id = value
         url = reverse(self.submit_url, kwargs={'instance_id': instance_id, "class_name":name})
-        return mark_safe('{1}<a href="{0}" class="btn btn-default btn btn-default ajax-add ajax-modal"><i class="fa fa-pencil-square-o"></i></a>'.format(url,name))
+        return mark_safe("""<label class="control-label" for="id_classes">{1} </label>
+                            <a href="{0}" class="btn btn-default btn btn-default ajax-add ajax-modal">
+                                <i class="fa fa-pencil-square-o"></i>
+                            </a>""".format(url,name))
 
 
 # class AddENCButtonWidget(forms.Widget):
@@ -133,13 +136,8 @@ class AddENCMetadata(forms.SelfHandlingForm):
                                                     required=False,
                                                     initial = instance_id)
 
-        # self.fields["add_new"] = forms.CharField(widget=AddENCButtonWidget(),
-        #                                             label = "",
-        #                                             required=False,
-        #                                             initial = instance_id)
-
         attributes = {'class': 'switchable', 'data-slug': 'classessource'}
-        self.fields['classes'] = forms.ChoiceField(label=_('New Class'), help_text=_("Choose a Class to add."),
+        self.fields['classes'] = forms.ChoiceField(label=_('... or you may add new Class'), help_text=_("Choose a Class to add."),
                                       widget=forms.Select(attrs=attributes),
                                       required=False)
 
