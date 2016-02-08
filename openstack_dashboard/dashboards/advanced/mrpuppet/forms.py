@@ -8,7 +8,7 @@ from openstack_dashboard.utils import filters
 from openstack_dashboard import api
 
 import simplejson as json
-import pyyaml
+# import pyyaml
 
 
 class UpdateMetadata(forms.SelfHandlingForm):
