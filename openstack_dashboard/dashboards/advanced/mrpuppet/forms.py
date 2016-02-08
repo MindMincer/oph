@@ -119,7 +119,9 @@ class AddENCMetadata(forms.SelfHandlingForm):
                                                      initial=instance_id)
         current_classes = self.get_current_classes()
         for the_class in current_classes:
-            self.fields[the_class] = forms.CharField(widget=EditENCButtonWidget())
+            self.fields[the_class] = forms.CharField(widget=EditENCButtonWidget(),
+                                                    help_text=_("View and edit params of this class."),
+                                                    required=False)
 
         self.fields['classes'].choices = self.populate_classes_choices()
         classes = self.populate_args_choices()
