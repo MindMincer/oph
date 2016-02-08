@@ -69,9 +69,9 @@ class EditENCMetadata(forms.SelfHandlingForm):
                                   required=False)
 
     def populate_params_of_the_class(self, class_name):
-        classes = {"class12": {"Param11":"param 1 var for class 1", "Param12":"param 2 var for class 1", "Param13":"param 3 var for class 1", "Param14":"param 4 var for class 1"},
-                        "class22": {"Param21":"param 1 var for class 2", "Param22":"param 2 var for class 2", "Param23":"param 3 var for class 2", "Param24":"param 4 var for class 2", "Param25":"param 5 var for class 2", "Param26":"param 6 var for class 2"},
-                        "class32": {"Param31":"param 1 var for class 3", "Param32":"param 2 var for class 3"}}
+        classes = {"class1": {"Param11":"param 1 var for class 1", "Param12":"param 2 var for class 1", "Param13":"param 3 var for class 1", "Param14":"param 4 var for class 1"},
+                    "class2": {"Param21":"param 1 var for class 2", "Param22":"param 2 var for class 2", "Param23":"param 3 var for class 2", "Param24":"param 4 var for class 2", "Param25":"param 5 var for class 2", "Param26":"param 6 var for class 2"},
+                    "class3": {"Param31":"param 1 var for class 3", "Param32":"param 2 var for class 3"}}
         return classes[class_name]
 
     def __init__(self, request, *args, **kwargs):
