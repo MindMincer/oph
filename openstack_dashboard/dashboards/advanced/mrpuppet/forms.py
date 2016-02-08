@@ -9,7 +9,7 @@ from openstack_dashboard import api
 
 import simplejson as json
 # import pyyaml
-
+from django.utils.html import escape, mark_safe
 
 class UpdateMetadata(forms.SelfHandlingForm):
     instance_id = forms.CharField(label=_("Instance ID"),
