@@ -118,7 +118,7 @@ class EditEncClassView(forms.ModalFormView):
                               _("Unable to retrieve instance."))
 
     def get_initial(self):
-        return {"instance_id": self.kwargs["instance_id"], "class_name": "class1"}
+        return {"instance_id": self.kwargs["instance_id"], "class_name": self.kwargs["class_name"]}
 
     def get_context_data(self, **kwargs):
         context = super(EditEncClassView, self).get_context_data(**kwargs)
