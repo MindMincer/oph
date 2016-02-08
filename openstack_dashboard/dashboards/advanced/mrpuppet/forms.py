@@ -90,6 +90,9 @@ class EditENCMetadata(forms.SelfHandlingForm):
 
     def handle(self, request, data):
         try:
+            messages.success(request,
+                             _('Class "%s" was successfully updated.')
+                             % data['class_name'])
             return True
         except Exception:
             exceptions.handle(request,
@@ -180,6 +183,9 @@ class AddENCMetadata(forms.SelfHandlingForm):
             # api.nova.server_metadata_update(self.request, instance_id, metadatas)
 
             # yaml.dump(data, ff, allow_unicode=True)
+            messages.success(request,
+                             _('New class was successfully added.')
+                             % data['class_name'])
             return True
         except Exception:
             exceptions.handle(request,
