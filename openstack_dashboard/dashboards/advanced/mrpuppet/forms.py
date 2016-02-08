@@ -3,8 +3,12 @@ from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import forms
+from openstack_dashboard.utils import filters
 
 from openstack_dashboard import api
+
+import simplejson as json
+import pyyaml
 
 
 class UpdateMetadata(forms.SelfHandlingForm):
@@ -59,6 +63,49 @@ class AddMetadata(forms.SelfHandlingForm):
                               _('Unable to add metadata.'))
 
 
+# class UpdateENCMetadata(forms.SelfHandlingForm):
+#     instance_id = forms.CharField(label=_("Instance ID"),
+#                                   widget=forms.HiddenInput(),
+#                                   required=False)
+
+    
+
+#     def populate_params_of_the_class(self, class_name):
+#         classes = AddENCMetadata.populate_args_choices(self, self.instance_id)
+#         return classes[class_name]
+
+#     def __init__(self, request, *args, **kwargs):
+#         super(UpdateENCMetadata, self).__init__(request, *args, **kwargs)
+#         initial = kwargs.get('initial', {})
+#         instance_id = initial.get('instance_id')
+#         self.fields['instance_id'] = forms.CharField(widget=forms.HiddenInput,
+#                                                      initial=instance_id)
+#         class_name = "class1"
+#         params_of_the_class = self.populate_params_of_the_class(class_name)
+#         for key, value in params_of_the_class.items():
+#             self.fields[key] = forms.CharField(label=key)
+#             self.fields[key].required = True
+#             self.fields[key].help_text = key
+#             self.fields[key].initial = value
+
+#     def handle(self, request, data):
+#         try:
+#             return True
+#         except Exception:
+#             exceptions.handle(request,
+#                               _('Unable to add metadata.'))
+
+
+class EditENCButtonWidget(forms.Widget):
+    # EDIT_ENC_URL = "horizon:advanced:mrpuppet:edit_enc_class"
+    def render(self, value, attrs=None):
+        url = "/horizon/advanced/"
+        return '<a href="{}" class="btn btn-default"><i class="fa fa-pencil-square-o"></i></a>'.format(url)
+
+class PlainTextWidget(forms.Widget):
+    def render(self, _name, value, _attrs):
+        return mark_safe(value) if value is not None else '-'
+
 class AddENCMetadata(forms.SelfHandlingForm):
     instance_id = forms.CharField(label=_("Instance ID"),
                                   widget=forms.HiddenInput(),
@@ -74,9 +121,13 @@ class AddENCMetadata(forms.SelfHandlingForm):
         instance_id = initial.get('instance_id')
         self.fields['instance_id'] = forms.CharField(widget=forms.HiddenInput,
                                                      initial=instance_id)
-        self.fields['classes'].choices = self.populate_classes_choices()
+        current_classes = self.get_current_classes()
+        for the_class in current_classes:
+            self.fields[the_class] = forms.CharField(widget=PlainTextWidget, initial=the_class)
+            self.fields[the_class+"_edit"] = forms.CharField(widget=EditENCButtonWidget, initial=the_class)
 
-        classes = self.populate_args_choices()#{"class1":4, "class2":6, "class3":2}
+        self.fields['classes'].choices = self.populate_classes_choices()
+        classes = self.populate_args_choices()
         for the_class, params in classes.items():
             for param, var in params.items():
                 self.fields[the_class + param] = forms.CharField(label=param)
@@ -87,8 +138,15 @@ class AddENCMetadata(forms.SelfHandlingForm):
                                                         'data-switch-on': 'classessource',
                                                         'data-classessource-' + the_class: param}
 
+    def get_current_classes(self):
+        # instance_id = self.instance_id
+        # server = api.nova.server_get(self.request, instance_id).to_dict()
+        # enc_metadatas = server['metadata']['enc']
+        # return enc_metadatas.keys()
+        return ["class1","class2"]
+    
     def populate_classes_choices(self):
-        classes_list = [('', _('Select Metadata Class')), ("class1","meta class 1"), ("class2","meta class 2"), ("class3","meta class 3")]
+        classes_list = [('', _('Select Metadata Class')), ("class1","class1"), ("class2","class2"), ("class3","class3")]
         return sorted(classes_list)
 
     def populate_args_choices(self):
@@ -105,6 +163,8 @@ class AddENCMetadata(forms.SelfHandlingForm):
             # metadatas = server['metadata']
             # metadatas.update({data['name']:data['value']})
             # api.nova.server_metadata_update(self.request, instance_id, metadatas)
+
+            # yaml.dump(data, ff, allow_unicode=True)
             return True
         except Exception:
             exceptions.handle(request,
