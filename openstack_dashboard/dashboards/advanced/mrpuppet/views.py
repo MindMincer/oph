@@ -107,27 +107,19 @@ class EditEncClassView(forms.ModalFormView):
     submit_label = _("Edit Metadata")
     submit_url = "horizon:advanced:mrpuppet:edit_enc_metadata"
 
-    # def get_object(self):
-    #     try:
-    #         server_data = api.nova.server_get(self.request,
-    #                                    self.kwargs["instance_id"]).to_dict()
-    #         enc = server_data['metadata']["enc"]
-    #         return enc
-    #     except Exception:
-    #         exceptions.handle(self.request,
-    #                           _("Unable to retrieve instance."))
-
     def get_initial(self):
         return {"instance_id": self.kwargs["instance_id"], "class_name": self.kwargs["class_name"]}
+
+    def get_success_url(self):
+        return reverse(self.success_url,
+                       args=(self.kwargs['instance_id'],))
 
     def get_context_data(self, **kwargs):
         context = super(EditEncClassView, self).get_context_data(**kwargs)
         instance_id = self.kwargs['instance_id']
         class_name = self.kwargs['class_name']
         context['instance_id'] = instance_id
-        # context['instance'] = self.get_object()
         context['submit_url'] = reverse(self.submit_url, kwargs={'instance_id': instance_id, "class_name":class_name})
-        context['success_url'] = reverse(self.success_url, kwargs={'instance_id': instance_id})
         return context
 
 class AddENCMetadataView(forms.ModalFormView):
