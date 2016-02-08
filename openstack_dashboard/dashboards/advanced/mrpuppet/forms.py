@@ -103,7 +103,7 @@ class EditENCButtonWidget(forms.Widget):
         return '<a href="{}" class="btn btn-default"><i class="fa fa-pencil-square-o"></i></a>'.format(url)
 
 class PlainTextWidget(forms.Widget):
-    def render(self, _name, value, _attrs):
+    def render(self, value, attrs):
         return mark_safe(value) if value is not None else '-'
 
 class AddENCMetadata(forms.SelfHandlingForm):
