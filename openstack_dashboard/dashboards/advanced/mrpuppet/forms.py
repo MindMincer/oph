@@ -110,7 +110,7 @@ class AddENCButtonWidget(forms.Widget):
         instance_id = value
         url = reverse(self.submit_url, args=[instance_id])
         text = "Or you maay add new class"
-        return mark_safe('{1}<a href="{0}" class="btn btn-default"><i class="fa fa-plus"></i></a>'.format(url,text))
+        return mark_safe('{1}{2}<a href="{0}" class="btn btn-default"><i class="fa fa-plus"></i></a>'.format(url,text, value))
 
 
 class AddENCMetadata(forms.SelfHandlingForm):
