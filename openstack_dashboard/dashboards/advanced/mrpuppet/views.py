@@ -110,7 +110,7 @@ class EditEncClassView(forms.ModalFormView):
     def get_object(self):
         try:
             server_data = api.nova.server_get(self.request,
-                                       self.kwargs["instance_id"])
+                                       self.kwargs["instance_id"]).to_dict()
             enc = server_data['metadata']["enc"]
             return enc
         except Exception:
