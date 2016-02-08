@@ -97,20 +97,21 @@ class EditENCMetadata(forms.SelfHandlingForm):
 
 
 class EditENCButtonWidget(forms.Widget):
-    # EDIT_ENC_URL = "horizon:advanced:mrpuppet:edit_enc_class"
+    submit_url = "horizon:advanced:mrpuppet:edit_enc_metadata"
     def render(self, name, value, attrs=None):
-        url = "/horizon/advanced/"
+        instance_id = value
+        url = reverse(self.submit_url, args=[instance_id, name])
         return mark_safe('{1}<a href="{0}" class="btn btn-default"><i class="fa fa-pencil-square-o"></i></a>'.format(url,name))
 
 
-class AddENCButtonWidget(forms.Widget):
-    submit_url = "horizon:advanced:mrpuppet:add_enc_metadata"
-    # EDIT_ENC_URL = "horizon:advanced:mrpuppet:edit_enc_class"
-    def render(self, name, value, attrs=None):
-        instance_id = value
-        url = reverse(self.submit_url, args=[instance_id])
-        text = "Or you maay add new class"
-        return mark_safe('{1}{2}<a href="{0}" class="btn btn-default"><i class="fa fa-plus"></i></a>'.format(url,text, attrs))
+# class AddENCButtonWidget(forms.Widget):
+#     submit_url = "horizon:advanced:mrpuppet:add_enc_metadata"
+#     # EDIT_ENC_URL = "horizon:advanced:mrpuppet:edit_enc_class"
+#     def render(self, name, value, attrs=None):
+#         instance_id = value
+#         url = reverse(self.submit_url, args=[instance_id])
+#         text = "Or you maay add new class"
+#         return mark_safe('{1}{2}<a href="{0}" class="btn btn-default"><i class="fa fa-plus"></i></a>'.format(url,text, attrs))
 
 
 class AddENCMetadata(forms.SelfHandlingForm):
@@ -129,7 +130,8 @@ class AddENCMetadata(forms.SelfHandlingForm):
         for the_class in current_classes:
             self.fields[the_class] = forms.CharField(widget=EditENCButtonWidget(),
                                                     label = "",
-                                                    required=False)
+                                                    required=False,
+                                                    initial = instance_id)
 
         # self.fields["add_new"] = forms.CharField(widget=AddENCButtonWidget(),
         #                                             label = "",

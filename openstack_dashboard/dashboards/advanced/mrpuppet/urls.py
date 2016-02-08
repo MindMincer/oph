@@ -16,6 +16,7 @@ from django.conf.urls import url
 from openstack_dashboard.dashboards.advanced.mrpuppet import views 
 
 INSTANCES = r'^(?P<instance_id>[^/]+)/%s$'
+INSTANCE_ENCCLASS = r'^(?P<instance_id>[^/]+)/(?P<class_name>[^/]+)/%s$'
 
 urlpatterns = patterns(
 	'openstack_dashboard.dashboards.advanced.mrpuppet.views',
@@ -23,5 +24,5 @@ urlpatterns = patterns(
     url(INSTANCES % 'add_metadata', views.AddMetadataView.as_view(), name='add_metadata'),
     url(INSTANCES % 'update_metadata', views.UpdateMetadataView.as_view(), name='update_metadata'),
     url(INSTANCES % 'add_enc_metadata', views.AddENCMetadataView.as_view(), name='add_enc_metadata'),
-    url(INSTANCES % 'edit_enc_metadata', views.EditEncClassView.as_view(), name='edit_enc_metadata'),
+    url(INSTANCE_ENCCLASS % 'edit_enc_metadata', views.EditEncClassView.as_view(), name='edit_enc_metadata'),
 )
