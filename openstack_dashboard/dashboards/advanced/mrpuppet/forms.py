@@ -101,7 +101,7 @@ class EditENCButtonWidget(forms.Widget):
     def render(self, name, value, attrs=None):
         instance_id = value
         url = reverse_lazy(self.submit_url, kwargs={'instance_id': instance_id, "class_name":name})
-        return mark_safe('{1}<a href="{0}" class="btn btn-default"><i class="fa fa-pencil-square-o"></i></a>'.format(url,name))
+        return mark_safe('{1}<a href="{0}" class="btn btn-default btn btn-default ajax-add ajax-modal"><i class="fa fa-pencil-square-o"></i></a>'.format(url,name))
 
 
 # class AddENCButtonWidget(forms.Widget):
