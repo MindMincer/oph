@@ -68,8 +68,8 @@ class EditENCMetadata(forms.SelfHandlingForm):
                                   widget=forms.HiddenInput(),
                                   required=False)
 
-    def populate_params_of_the_class(self, class_name):
-        classes = AddENCMetadata.populate_args_choices(self, self.instance_id)
+    def populate_params_of_the_class(self, instance_id, class_name):
+        classes = AddENCMetadata.populate_args_choices(self, instance_id)
         return classes[class_name]
 
     def __init__(self, request, *args, **kwargs):
@@ -79,7 +79,7 @@ class EditENCMetadata(forms.SelfHandlingForm):
         self.fields['instance_id'] = forms.CharField(widget=forms.HiddenInput,
                                                      initial=instance_id)
         class_name = initial.get('class_name')
-        params_of_the_class = self.populate_params_of_the_class(class_name)
+        params_of_the_class = self.populate_params_of_the_class(instance_id, class_name)
         for key, value in params_of_the_class.items():
             self.fields[key] = forms.CharField(label=key)
             self.fields[key].required = True
