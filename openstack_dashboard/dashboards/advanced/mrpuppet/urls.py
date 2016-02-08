@@ -17,7 +17,6 @@ from openstack_dashboard.dashboards.advanced.mrpuppet import views
 
 INSTANCES = r'^(?P<instance_id>[^/]+)/%s$'
 INSTANCE_ENCCLASS = r'^(?P<instance_id>[^/]+)/(?P<class_name>[^/]+)/%s$'
-(?P<network_id>[^/]+)/subnets/(?P<subnet_id>[^/]+)
 
 urlpatterns = patterns(
 	'openstack_dashboard.dashboards.advanced.mrpuppet.views',
