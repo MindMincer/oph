@@ -69,6 +69,9 @@ class EditENCMetadata(forms.SelfHandlingForm):
     instance_id = forms.CharField(label=_("Instance ID"),
                                   widget=forms.HiddenInput(),
                                   required=False)
+    class_name = forms.CharField(label=_("Class NAme"),
+                                  widget=forms.HiddenInput(),
+                                  required=False)
 
     def populate_params_of_the_class(self, instance_id, class_name):
         server = api.nova.server_get(self.request, instance_id).to_dict()
@@ -93,7 +96,18 @@ class EditENCMetadata(forms.SelfHandlingForm):
 
     def handle(self, request, data):
         try:
-            ### TODO
+            instance_id = data['instance_id']
+            server = api.nova.server_get(self.request, instance_id).to_dict()
+            metadatas = server['metadata']
+            enc_metadatas = metadatas['enc']
+            enc_metadatas = yaml.load(enc_metadatas)
+            new_class_params = dict()
+            for param in enc_metadatas['classes'][data['class_name']].keys():
+                new_class_params.update({param:data[param]})
+            enc_metadatas['classes'].update({data['class_name']:new_class_params})
+            metadatas.update({'enc':"---\n"+yaml.safe_dump(enc_metadatas, allow_unicode=None)})
+            api.nova.server_metadata_update(self.request, instance_id, metadatas)
+
             messages.success(request,
                              _('Class was successfully updated.')
                             )
@@ -187,11 +201,6 @@ class AddENCMetadata(forms.SelfHandlingForm):
             server = api.nova.server_get(self.request, instance_id).to_dict()
             metadatas = server['metadata']
             enc_metadatas = metadatas['enc']
-#             enc_metadatas = """---
-# classes:
-#     notifyme:
-#         mess: "lalalalalala"
-# environment: production"""
             enc_metadatas = yaml.load(enc_metadatas)
             new_class_params = dict()
             for param in classes[data['classes']].keys():
