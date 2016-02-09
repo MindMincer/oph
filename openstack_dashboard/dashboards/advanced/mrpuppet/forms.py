@@ -189,7 +189,7 @@ class AddENCMetadata(forms.SelfHandlingForm):
             metadatas = server['metadata']
             enc_metadatas = metadatas['enc']
             enc_metadatas = yaml.load(enc_metadatas)
-            new_class_params = dict()l
+            new_class_params = dict()
             for param in classes[data['the_class']].keys():
                 new_class_params.update({param:data[data['the_class']+param]})
             enc_metadatas.update({data['the_class']:new_class_params})
