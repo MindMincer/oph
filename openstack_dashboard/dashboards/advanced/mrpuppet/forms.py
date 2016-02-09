@@ -72,10 +72,15 @@ class EditENCMetadata(forms.SelfHandlingForm):
 
     def populate_params_of_the_class(self, class_name):
         ##TODO
-        classes = {"class1": {"Param11":"param 1 var for class 1", "Param12":"param 2 var for class 1", "Param13":"param 3 var for class 1", "Param14":"param 4 var for class 1"},
-                    "class2": {"Param21":"param 1 var for class 2", "Param22":"param 2 var for class 2", "Param23":"param 3 var for class 2", "Param24":"param 4 var for class 2", "Param25":"param 5 var for class 2", "Param26":"param 6 var for class 2"},
-                    "class3": {"Param31":"param 1 var for class 3", "Param32":"param 2 var for class 3"}}
-        return classes[class_name]
+        # classes = {"class1": {"Param11":"param 1 var for class 1", "Param12":"param 2 var for class 1", "Param13":"param 3 var for class 1", "Param14":"param 4 var for class 1"},
+        #             "class2": {"Param21":"param 1 var for class 2", "Param22":"param 2 var for class 2", "Param23":"param 3 var for class 2", "Param24":"param 4 var for class 2", "Param25":"param 5 var for class 2", "Param26":"param 6 var for class 2"},
+        #             "class3": {"Param31":"param 1 var for class 3", "Param32":"param 2 var for class 3"}}
+        instance_id = data['instance_id']
+        server = api.nova.server_get(self.request, instance_id).to_dict()
+        metadatas = server['metadata']
+        enc_metadatas = metadatas['enc']
+        enc_metadatas = yaml.load(enc_metadatas)
+        return enc_metadatas['classes'][class_name]
 
     def __init__(self, request, *args, **kwargs):
         super(EditENCMetadata, self).__init__(request, *args, **kwargs)
@@ -162,12 +167,12 @@ class AddENCMetadata(forms.SelfHandlingForm):
                                                         'data-classessource-' + the_class: param}
 
     def get_current_classes(self):
-        ### TODO
-        # instance_id = self.instance_id
-        # server = api.nova.server_get(self.request, instance_id).to_dict()
-        # enc_metadatas = server['metadata']['enc']
-        # return enc_metadatas.keys()
-        return ["class1","class2"]
+        instance_id = data['instance_id']
+        server = api.nova.server_get(self.request, instance_id).to_dict()
+        metadatas = server['metadata']
+        enc_metadatas = metadatas['enc']
+        enc_metadatas = yaml.load(enc_metadatas)
+        return enc_metadatas['classes'].keys()
     
     def populate_classes_choices(self):
         classes_list = [('', _('Select Metadata Class')), ("class1","class1"), ("class2","class2"), ("class3","class3")]
@@ -188,11 +193,11 @@ class AddENCMetadata(forms.SelfHandlingForm):
             server = api.nova.server_get(self.request, instance_id).to_dict()
             metadatas = server['metadata']
             enc_metadatas = metadatas['enc']
-            enc_metadatas = """---
-classes:
-    notifyme:
-        mess: "lalalalalala"
-environment: production"""
+#             enc_metadatas = """---
+# classes:
+#     notifyme:
+#         mess: "lalalalalala"
+# environment: production"""
             enc_metadatas = yaml.load(enc_metadatas)
             new_class_params = dict()
             for param in classes[data['classes']].keys():
