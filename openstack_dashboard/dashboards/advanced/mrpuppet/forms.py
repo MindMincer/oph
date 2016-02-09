@@ -188,6 +188,11 @@ class AddENCMetadata(forms.SelfHandlingForm):
             server = api.nova.server_get(self.request, instance_id).to_dict()
             metadatas = server['metadata']
             enc_metadatas = metadatas['enc']
+            enc_metadatas = """---
+classes:
+    notifyme:
+        mess: "lalalalalala"
+environment: production"""
             enc_metadatas = yaml.load(enc_metadatas)
             new_class_params = dict()
             for param in classes[data['classes']].keys():
