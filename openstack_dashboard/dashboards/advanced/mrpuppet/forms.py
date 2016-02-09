@@ -103,7 +103,7 @@ class EditENCMetadata(forms.SelfHandlingForm):
                         self.get_object_display(handled)]
                 response = http.HttpResponse(json.dumps(data))
                 response["X-Horizon-Add-To-Field"] = field_id
-            else isinstance(handled, http.HttpResponse):
+            else:
                 return handled
         else:
             # If handled didn't return, we can assume something went
