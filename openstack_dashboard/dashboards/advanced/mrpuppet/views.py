@@ -101,8 +101,8 @@ class EditEncClassView(forms.ModalFormView):
     template_name = 'advanced/mrpuppet/edit_enc_metadata.html'
     success_url = "horizon:advanced:mrpuppet:index"
     modal_id = "edit_metadata_modal"
-    modal_header = _("Edit Metadata")
-    submit_label = _("Edit Metadata")
+    modal_header = _("Edit ENC Metadata")
+    submit_label = _("Edit ENC Metadata")
     submit_url = "horizon:advanced:mrpuppet:edit_enc_metadata"
 
     def get_initial(self):
