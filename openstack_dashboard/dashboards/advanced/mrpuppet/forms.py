@@ -198,7 +198,7 @@ environment: production"""
             for param in classes[data['classes']].keys():
                 new_class_params.update({param:data[data['classes']+param]})
             enc_metadatas['classes'].update({data['classes']:new_class_params})
-            metadatas.update({'enc':"---\n"+yaml.dump(enc_metadatas, allow_unicode=None)})
+            metadatas.update({'enc':"---\n"+yaml.safe_dump(enc_metadatas, allow_unicode=None)})
             api.nova.server_metadata_update(self.request, instance_id, metadatas)
 
             messages.success(request,
