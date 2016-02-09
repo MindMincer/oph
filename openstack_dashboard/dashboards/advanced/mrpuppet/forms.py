@@ -70,7 +70,7 @@ class EditENCMetadata(forms.SelfHandlingForm):
                                   widget=forms.HiddenInput(),
                                   required=False)
 
-    def populate_params_of_the_class(self, class_name):
+    def populate_params_of_the_class(self, instance_id, class_name):
         ##TODO
         # classes = {"class1": {"Param11":"param 1 var for class 1", "Param12":"param 2 var for class 1", "Param13":"param 3 var for class 1", "Param14":"param 4 var for class 1"},
         #             "class2": {"Param21":"param 1 var for class 2", "Param22":"param 2 var for class 2", "Param23":"param 3 var for class 2", "Param24":"param 4 var for class 2", "Param25":"param 5 var for class 2", "Param26":"param 6 var for class 2"},
@@ -89,7 +89,7 @@ class EditENCMetadata(forms.SelfHandlingForm):
         self.fields['instance_id'] = forms.CharField(widget=forms.HiddenInput,
                                                      initial=instance_id)
         class_name = initial.get('class_name')
-        params_of_the_class = self.populate_params_of_the_class(class_name)
+        params_of_the_class = self.populate_params_of_the_class(instance_id, class_name)
         for key, value in params_of_the_class.items():
             self.fields[key] = forms.CharField(label=key)
             self.fields[key].required = True
@@ -142,7 +142,7 @@ class AddENCMetadata(forms.SelfHandlingForm):
         instance_id = initial.get('instance_id')
         self.fields['instance_id'] = forms.CharField(widget=forms.HiddenInput,
                                                      initial=instance_id)
-        current_classes = self.get_current_classes()
+        current_classes = self.get_current_classes(instance_id)
         for the_class in current_classes:
             self.fields[the_class] = forms.CharField(widget=EditENCButtonWidget(),
                                                     label = "",
@@ -166,8 +166,7 @@ class AddENCMetadata(forms.SelfHandlingForm):
                                                         'data-switch-on': 'classessource',
                                                         'data-classessource-' + the_class: param}
 
-    def get_current_classes(self):
-        instance_id = data['instance_id']
+    def get_current_classes(self, instance_id):
         server = api.nova.server_get(self.request, instance_id).to_dict()
         metadatas = server['metadata']
         enc_metadatas = metadatas['enc']
