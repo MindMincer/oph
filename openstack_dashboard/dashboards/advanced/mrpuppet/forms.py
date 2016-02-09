@@ -199,7 +199,7 @@ environment: production"""
                 new_class_params.update({param:data[data['classes']+param]})
             enc_metadatas.update({data['classes']:new_class_params})
             metadatas.update({'enc':yaml.dump(enc_metadatas)})
-            # api.nova.server_metadata_update(self.request, instance_id, metadatas)
+            api.nova.server_metadata_update(self.request, instance_id, metadatas)
 
             messages.success(request,
                              _('New class was successfully added.'))
