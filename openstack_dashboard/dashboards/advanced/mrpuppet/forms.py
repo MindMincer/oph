@@ -11,6 +11,7 @@ from openstack_dashboard import api
 import simplejson as json
 # import pyyaml
 from django.utils.html import escape, mark_safe
+from django.http import HttpResponse
 
 class UpdateMetadata(forms.SelfHandlingForm):
     instance_id = forms.CharField(label=_("Instance ID"),
@@ -89,44 +90,14 @@ class EditENCMetadata(forms.SelfHandlingForm):
             self.fields[key].help_text = key
             self.fields[key].initial = value
 
-    def form_valid(self, form):
-        try:
-            handled = form.handle(self.request, form.cleaned_data)
-        except Exception:
-            handled = None
-            exceptions.handle(self.request)
-
-        if handled:
-            if ADD_TO_FIELD_HEADER in self.request.META:
-                field_id = self.request.META[ADD_TO_FIELD_HEADER]
-                data = [self.get_object_id(handled),
-                        self.get_object_display(handled)]
-                response = http.HttpResponse(json.dumps(data))
-                response["X-Horizon-Add-To-Field"] = field_id
-            elif isinstance(handled, http.HttpResponse):
-                return handled
-            else:
-                success_url = self.get_cancel_url()
-                response = http.HttpResponseRedirect(success_url)
-                # TODO(gabriel): This is not a long-term solution to how
-                # AJAX should be handled, but it's an expedient solution
-                # until the blueprint for AJAX handling is architected
-                # and implemented.
-                response['X-Horizon-Location'] = success_url
-            return response
-        else:
-            # If handled didn't return, we can assume something went
-            # wrong, and we should send back the form as-is.
-            return self.form_invalid(form)
-
-
     def handle(self, request, data):
         try:
             ### TODO
             messages.success(request,
                              _('Class was successfully updated.')
                             )
-            return True
+            response = HttpResponse()
+            return response
         except Exception:
             exceptions.handle(request,
                               _('Unable to add metadata.'))
