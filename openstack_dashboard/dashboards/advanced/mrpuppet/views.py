@@ -111,6 +111,7 @@ class EditEncClassView(forms.ModalFormView):
         return {"instance_id": self.kwargs["instance_id"], "class_name": self.kwargs["class_name"]}
 
     def get_success_url(self):
+        instance_id = self.kwargs['instance_id']
         return reverse(self.success_url, args=[instance_id])
 
     def get_context_data(self, **kwargs):
