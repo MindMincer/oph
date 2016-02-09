@@ -31,11 +31,9 @@ from openstack_dashboard.dashboards.advanced.mrpuppet \
 
 class IndexView(tabs.TabbedTableView):
     tab_group_class = advanced_tabs.AdvancedTabs
-    # A very simple class-based view...
     template_name = 'advanced/mrpuppet/index.html'
 
     def get_data(self, request, context, *args, **kwargs):
-        # Add data to the context here...
         return context
 
 
@@ -119,7 +117,6 @@ class EditEncClassView(forms.ModalFormView):
         return context
 
 class AddENCMetadataView(forms.ModalFormView):
-    # workflow_class = project_workflows.ENCDataWorkflow
     form_class = project_forms.AddENCMetadata
     template_name = 'advanced/mrpuppet/add_enc_metadata.html'
     success_url = reverse_lazy("horizon:advanced:mrpuppet:index")

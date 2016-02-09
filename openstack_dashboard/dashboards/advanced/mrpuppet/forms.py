@@ -9,8 +9,8 @@ from openstack_dashboard.utils import filters
 from openstack_dashboard import api
 
 import simplejson as json
-# import pyyaml
-from django.utils.html import escape, mark_safe
+import yamll
+from django.utils.html import mark_safe
 from django.http import HttpResponse
 
 class UpdateMetadata(forms.SelfHandlingForm):
@@ -71,6 +71,7 @@ class EditENCMetadata(forms.SelfHandlingForm):
                                   required=False)
 
     def populate_params_of_the_class(self, class_name):
+        ##TODO
         classes = {"class1": {"Param11":"param 1 var for class 1", "Param12":"param 2 var for class 1", "Param13":"param 3 var for class 1", "Param14":"param 4 var for class 1"},
                     "class2": {"Param21":"param 1 var for class 2", "Param22":"param 2 var for class 2", "Param23":"param 3 var for class 2", "Param24":"param 4 var for class 2", "Param25":"param 5 var for class 2", "Param26":"param 6 var for class 2"},
                     "class3": {"Param31":"param 1 var for class 3", "Param32":"param 2 var for class 3"}}
@@ -181,20 +182,23 @@ class AddENCMetadata(forms.SelfHandlingForm):
 
     def handle(self, request, data):
         try:
-            ### TODO : check if exist
-
-
-
-            # instance_id = data['instance_id']
-            # server = api.nova.server_get(self.request, instance_id).to_dict()
-            # metadatas = server['metadata']
-            # metadatas.update({data['name']:data['value']})
+            instance_id = data['instance_id']
+            classes = self.populate_args_choices()
+            
+            server = api.nova.server_get(self.request, instance_id).to_dict()
+            metadatas = server['metadata']
+            enc_metadatas = metadatas['enc']
+            enc_metadatas = yaml.load(enc_metadatas)
+            new_class_params = dict()l
+            for param in classes[data['the_class']].keys():
+                new_class_params.update({param:data[data['the_class']+param]})
+            enc_metadatas.update({data['the_class']:new_class_params})
+            metadatas.update({'enc':yaml.dump(enc_metadatas)})
             # api.nova.server_metadata_update(self.request, instance_id, metadatas)
 
-            # yaml.dump(data, ff, allow_unicode=True)
             messages.success(request,
                              _('New class was successfully added.')
-                             % data['class_name'])
+                             % data['the_class'])
             return True
         except Exception:
             exceptions.handle(request,
