@@ -190,15 +190,15 @@ class AddENCMetadata(forms.SelfHandlingForm):
             enc_metadatas = metadatas['enc']
             enc_metadatas = yaml.load(enc_metadatas)
             new_class_params = dict()
-            for param in classes[data['the_class']].keys():
-                new_class_params.update({param:data[data['the_class']+param]})
-            enc_metadatas.update({data['the_class']:new_class_params})
+            for param in classes[data['classes']].keys():
+                new_class_params.update({param:data[data['classes']+param]})
+            enc_metadatas.update({data['classes']:new_class_params})
             metadatas.update({'enc':yaml.dump(enc_metadatas)})
             # api.nova.server_metadata_update(self.request, instance_id, metadatas)
 
             messages.success(request,
                              _('New class was successfully added.')
-                             % data['the_class'])
+                             % data['classes'])
             return True
         except Exception:
             exceptions.handle(request,
