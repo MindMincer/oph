@@ -9,7 +9,7 @@ from openstack_dashboard.utils import filters
 from openstack_dashboard import api
 
 import simplejson as json
-import yamll
+import yaml
 from django.utils.html import mark_safe
 from django.http import HttpResponse
 
