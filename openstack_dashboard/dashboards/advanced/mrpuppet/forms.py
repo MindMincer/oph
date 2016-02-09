@@ -202,8 +202,7 @@ environment: production"""
             # api.nova.server_metadata_update(self.request, instance_id, metadatas)
 
             messages.success(request,
-                             _('New class was successfully added.')
-                             % data['classes'])
+                             _('New class was successfully added.'))
             return True
         except Exception:
             exceptions.handle(request,
