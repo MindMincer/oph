@@ -103,8 +103,17 @@ class EditENCMetadata(forms.SelfHandlingForm):
                         self.get_object_display(handled)]
                 response = http.HttpResponse(json.dumps(data))
                 response["X-Horizon-Add-To-Field"] = field_id
-            else:
+            elif isinstance(handled, http.HttpResponse):
                 return handled
+            else:
+                success_url = self.get_cancel_url()
+                response = http.HttpResponseRedirect(success_url)
+                # TODO(gabriel): This is not a long-term solution to how
+                # AJAX should be handled, but it's an expedient solution
+                # until the blueprint for AJAX handling is architected
+                # and implemented.
+                response['X-Horizon-Location'] = success_url
+            return response
         else:
             # If handled didn't return, we can assume something went
             # wrong, and we should send back the form as-is.
