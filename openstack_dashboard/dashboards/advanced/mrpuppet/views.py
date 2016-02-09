@@ -101,7 +101,7 @@ class AddMetadataView(forms.ModalFormView):
 class EditEncClassView(forms.ModalFormView):
     form_class = project_forms.EditENCMetadata
     template_name = 'advanced/mrpuppet/edit_enc_metadata.html'
-    success_url = "horizon:advanced:mrpuppet:add_enc_metadata"
+    success_url = "horizon:advanced:mrpuppet:index"
     modal_id = "edit_metadata_modal"
     modal_header = _("Edit Metadata")
     submit_label = _("Edit Metadata")
