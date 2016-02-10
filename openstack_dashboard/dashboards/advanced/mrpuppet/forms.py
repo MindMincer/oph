@@ -188,7 +188,7 @@ class AddENCMetadata(forms.SelfHandlingForm):
         metadatas = {
                     "enc_java_env":"---\n"+yaml.safe_dump({"java_env":{"version":"8.0", "security_level":"high"}}, allow_unicode=None),
                     "enc_python_env":"---\n"+yaml.safe_dump({"python_env":{"version":"2.7", "installer":"pip"}}, allow_unicode=None),
-                    "enc_linux_env":"---\n"+yaml.safe_dump({"linux_env":{"os":"Linux", "version":"2.4", "usb_driver":"true"}}, allow_unicode=None)
+                    "enc_virtualbox_Linux":"---\n"+yaml.safe_dump({"virtualbox_Linux":{"os":"Linux", "version":"2.4", "usb_driver":"true", "storage":"100GB"}}, allow_unicode=None)
                     # "enc_virtualbox_Linux":"---\n"+yaml.safe_dump({"virtualbox_Linux":{"os":"Linux", "version":"2.4", "usb_driver":"true", "storage":"100GB"}}, allow_unicode=None),
                     # "enc_Windows":"---\n"+yaml.safe_dump({"virtualbox_Windows":{"os":"Windows", "version":"7.0", "usb_driver":"false", "cpu":"2"}}, allow_unicode=None),
                     # "enc_FreeBSD":"---\n"+yaml.safe_dump({"virtualbox_FreeBSD":{"os":"FreeBSD", "version":"1.3", "media":"true"}}, allow_unicode=None)
