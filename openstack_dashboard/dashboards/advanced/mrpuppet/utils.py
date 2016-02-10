@@ -14,7 +14,7 @@ def get_enc_metadata(request, instance_id):
 	server = api.nova.server_get(request, instance_id).to_dict()
 	metadata = server['metadata']
 	enc_values = [yaml.load(enc_value) for (class_name, enc_value) in metadata.items() if "enc" in class_name]
-	return {enc_value.keys()[0]: enc_value.values()[0] for enc_val in enc_values}
+	return {enc_value.keys()[0]: enc_value.values()[0] for enc_value in enc_values}
 
 def set_enc_metadata(request, instance_id, class_name, parameters):
     enc_metadata = {class_name: new_class_params}
