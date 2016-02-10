@@ -184,7 +184,7 @@ class AddENCMetadata(forms.SelfHandlingForm):
                     "enc_Windows":{"virtualbox_Windows":{"os":"Windows", "version":"7.0", "usb_driver":"false", "cpu":"2"}},
                     "enc_FreeBSD":{"virtualbox_FreeBSD":{"os":"FreeBSD", "version":"1.3", "media":"true"}}
                     }
-        api.nova.server_metadata_update(self.request, PUPPET_SERVER_ID, metadatas)
+        api.nova.server_metadata_update(self.request, PUPPET_SERVER_ID, "---\n"+yaml.safe_dump(metadatas, allow_unicode=None))
         api.nova.server_metadata_update(self.request, instance_id, {"clusters":"10"})
 
 
