@@ -35,7 +35,8 @@ class UpdateMetadata(forms.SelfHandlingForm):
             instance_id = data['instance_id']
             metadatas = utils.get_metadata(self.request, instance_id)
             for key, value in metadatas.items():
-                metadatas.update({key:data[key]})
+                if "enc" not in key:
+                    metadatas.update({key:data[key]})
             utils.set_metadata(self.request, instance_id, metadatas)
             return True
         except Exception:
