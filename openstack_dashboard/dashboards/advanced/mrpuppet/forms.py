@@ -199,6 +199,8 @@ class AddENCMetadata(forms.SelfHandlingForm):
 
 
 
+        server = api.nova.server_get(self.request, instance_id).to_dict()
+        metadatas = server['metadata']
         enc_metadatas = {"classes":{enc_value.keys()[0]:yaml.load(enc_value.values()[0]) for (class_name, enc_value) in metadatas.items() if "enc" in class_name}}
         if enc_metadatas['classes'].items():
             return enc_metadatas['classes'].keys()
