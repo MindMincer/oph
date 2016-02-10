@@ -56,7 +56,7 @@ class AddENCMetadata(tables.LinkAction):
 
     def allowed(self, request, instance=None):
         return instance.status in ("ACTIVE") \
-            and not is_deleting(instance)
+            and not is_deleting(instance) \
             and not is_server(instance)
 
 
