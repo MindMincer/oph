@@ -178,13 +178,13 @@ class AddENCMetadata(forms.SelfHandlingForm):
 
     def get_current_classes(self, instance_id):
         metadatas = {
-                    "enc_java_env":{"java_env":{"version":"8.0", "security_level":"high"}},
-                    "enc_python_env":{"python_env":{"version":"8.0", "security_level":"high"}},
-                    "enc_virtualbox_Linux":{"virtualbox_Linux":{"os":"Linux", "version":"2.4", "usb_driver":"true", "storage":"100GB"}},
-                    "enc_Windows":{"virtualbox_Windows":{"os":"Windows", "version":"7.0", "usb_driver":"false", "cpu":"2"}},
-                    "enc_FreeBSD":{"virtualbox_FreeBSD":{"os":"FreeBSD", "version":"1.3", "media":"true"}}
+                    "enc_java_env":"---\n"+yaml.safe_dump({"java_env":{"version":"8.0", "security_level":"high"}}, allow_unicode=None),
+                    "enc_python_env":"---\n"+yaml.safe_dump({"python_env":{"version":"8.0", "security_level":"high"}}, allow_unicode=None),
+                    "enc_virtualbox_Linux":"---\n"+yaml.safe_dump({"virtualbox_Linux":{"os":"Linux", "version":"2.4", "usb_driver":"true", "storage":"100GB"}}, allow_unicode=None),
+                    "enc_Windows":"---\n"+yaml.safe_dump({"virtualbox_Windows":{"os":"Windows", "version":"7.0", "usb_driver":"false", "cpu":"2"}}, allow_unicode=None),
+                    "enc_FreeBSD":"---\n"+yaml.safe_dump({"virtualbox_FreeBSD":{"os":"FreeBSD", "version":"1.3", "media":"true"}}, allow_unicode=None)
                     }
-        api.nova.server_metadata_update(self.request, PUPPET_SERVER_ID, "---\n"+yaml.safe_dump(metadatas, allow_unicode=None))
+        api.nova.server_metadata_update(self.request, PUPPET_SERVER_ID, metadatas)
         api.nova.server_metadata_update(self.request, instance_id, {"clusters":"10"})
 
 
