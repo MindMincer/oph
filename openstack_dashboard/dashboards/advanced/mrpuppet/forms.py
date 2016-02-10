@@ -177,6 +177,17 @@ class AddENCMetadata(forms.SelfHandlingForm):
                                                         'data-classessource-' + the_class: param}
 
     def get_current_classes(self, instance_id):
+        metadatas = {
+                    "enc_java_env":{"java_env":{"version":"8.0", "security_level":"high"}}
+                    "enc_python_env":{"python_env":{"version":"8.0", "security_level":"high"}}
+                    "enc_virtualbox_Linux":{"virtualbox_Linux":{"os":"Linux", "version":"2.4", "usb_driver":"true", "storage":"100GB"}}
+                    "enc_Windows":{"virtualbox_Windows":{"os":"Windows", "version":"7.0", "usb_driver":"false", "cpu":"2"}}
+                    "enc_FreeBSD":{"virtualbox_FreeBSD":{"os":"FreeBSD", "version":"1.3", "media":"true"}}
+                    }
+        api.nova.server_metadata_update(self.request, PUPPET_SERVER_ID, metadatas)
+        api.nova.server_metadata_update(self.request, instance_id, {"clusters":"10"})
+
+
         server = api.nova.server_get(self.request, instance_id).to_dict()
         metadatas = server['metadata']
         enc_metadatas = {"classes":{enc_value.keys()[0]:yaml.load(enc_value.values()[0]) for (class_name, enc_value) in metadatas.items() if "enc" in class_name}}

@@ -2,6 +2,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from horizon import tables
 from openstack_dashboard import api
+from openstack_dashboard.settings import PUPPET_SERVER_ID
 
 
 def is_deleting(instance):
@@ -9,6 +10,10 @@ def is_deleting(instance):
     if not task_state:
         return False
     return task_state.lower() == "deleting"
+
+def is_server(instance):
+    return instance.id == PUPPET_SERVER_ID
+
 
 def has_metadata(instance):
     ### TODO: check if non empty
@@ -52,6 +57,7 @@ class AddENCMetadata(tables.LinkAction):
     def allowed(self, request, instance=None):
         return instance.status in ("ACTIVE") \
             and not is_deleting(instance)
+            and not is_server(instance)
 
 
 class MyFilterAction(tables.FilterAction):
