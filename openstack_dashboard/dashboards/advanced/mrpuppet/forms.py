@@ -5,6 +5,7 @@ from horizon import exceptions
 from horizon import forms
 from horizon import messages
 from openstack_dashboard.utils import filters
+from openstack_dashboard.settings import PUPPET_SERVER_ID
 
 from openstack_dashboard import api
 
@@ -186,35 +187,36 @@ class AddENCMetadata(forms.SelfHandlingForm):
             return []
     
     def populate_classes_choices(self):
-        classes_list = [('', _('Select Metadata Class')), ("class1","class1"), ("class2","class2"), ("class3","class3")]
+        classes_list = self.populate_args_choices()
+        classes_list = [(key,key) for key in classes.keys()]
+        classes_list.append(('', _('Select Metadata Class')))
         return sorted(classes_list)
 
     def populate_args_choices(self):
-        ### TODO
-        args_choices = {"class1": {"Param11":"param 1 var for class 1", "Param12":"param 2 var for class 1", "Param13":"param 3 var for class 1", "Param14":"param 4 var for class 1"},
-                        "class2": {"Param21":"param 1 var for class 2", "Param22":"param 2 var for class 2", "Param23":"param 3 var for class 2", "Param24":"param 4 var for class 2", "Param25":"param 5 var for class 2", "Param26":"param 6 var for class 2"},
-                        "class3": {"Param31":"param 1 var for class 3", "Param32":"param 2 var for class 3"}}
-        return args_choices
+        server = api.nova.server_get(self.request, PUPPET_SERVER_ID).to_dict()
+        metadatas = server['metadata']
+        enc_metadatas = {"classes":{enc_value.keys()[0]:yaml.load(enc_value.values()[0]) for (class_name, enc_value) in metadatas.items() if "enc" in class_name}}
+        return args_choices['classes']
 
     def handle(self, request, data):
-        # try:
-        instance_id = data['instance_id']
-        classes = self.populate_args_choices()
-        
-        server = api.nova.server_get(self.request, instance_id).to_dict()
-        metadatas = server['metadata']
-        enc_metadatas = metadatas['enc']
-        enc_metadatas = yaml.load(enc_metadatas)
-        new_class_params = dict()
-        for param in classes[data['classes']].keys():
-            new_class_params.update({param:data[data['classes']+param]})
-        enc_metadatas['classes'].update({data['classes']:new_class_params})
-        metadatas.update({'enc':"---\n"+yaml.safe_dump(enc_metadatas, allow_unicode=None)})
-        api.nova.server_metadata_update(self.request, instance_id, metadatas)
+        try:
+            instance_id = data['instance_id']
+            classes = self.populate_args_choices()
 
-        messages.success(request,
-                         _('New class was successfully added.'))
-        return True
-        # except Exception:
-        #     exceptions.handle(request,
-        #                       _('Unable to add metadata.'))
+            server = api.nova.server_get(self.request, instance_id).to_dict()
+            metadatas = server['metadata']
+            enc_metadatas = metadatas['enc']
+            enc_metadatas = yaml.load(enc_metadatas)
+            new_class_params = dict()
+            for param in classes[data['classes']].keys():
+                new_class_params.update({param:data[data['classes']+param]})
+            enc_metadatas['classes'].update({data['classes']:new_class_params})
+            metadatas.update({'enc':"---\n"+yaml.safe_dump(enc_metadatas, allow_unicode=None)})
+            api.nova.server_metadata_update(self.request, instance_id, metadatas)
+
+            messages.success(request,
+                             _('New class was successfully added.'))
+            return True
+        except Exception:
+            exceptions.handle(request,
+                              _('Unable to add metadata.'))

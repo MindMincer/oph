@@ -330,3 +330,5 @@ if DEBUG:
 # below may be omitted, though it should not be harmful
 from openstack_auth import utils as auth_utils
 auth_utils.patch_middleware_get_user()
+
+PUPPET_SERVER_ID = "988e9a74-b732-4b84-b7d2-781bd43ed971"
