@@ -22,7 +22,7 @@ class UpdateMetadata(forms.SelfHandlingForm):
     def __init__(self, *args, **kwargs):
         super(UpdateMetadata, self).__init__(*args, **kwargs)
         instance_id = kwargs.get('initial', {}).get('instance_id')
-        metadatas = get_metadata(self.request, instance_id)
+        metadatas = utils.get_metadata(self.request, instance_id)
         for key, value in metadatas.items():
             if "enc" not in key:
                 self.fields[key] = forms.CharField(label=key)
@@ -33,10 +33,10 @@ class UpdateMetadata(forms.SelfHandlingForm):
     def handle(self, request, data):
         try:
             instance_id = data['instance_id']
-            metadatas = get_metadata(self.request, instance_id)
+            metadatas = utils.get_metadata(self.request, instance_id)
             for key, value in metadatas.items():
                 metadatas.update({key:data[key]})
-            set_metadata(self.request, instance_id, metadatas)
+            utils.set_metadata(self.request, instance_id, metadatas)
             return True
         except Exception:
             exceptions.handle(request,
@@ -57,9 +57,9 @@ class AddMetadata(forms.SelfHandlingForm):
         try:
             ### TODO : check if exist
             instance_id = data['instance_id']
-            metadatas = get_metadata(self.request, instance_id)
+            metadatas = utils.get_metadata(self.request, instance_id)
             metadatas.update({data['name']:data['value']})
-            set_metadata(self.request, instance_id, metadatas)
+            utils.set_metadata(self.request, instance_id, metadatas)
             return True
         except Exception:
             exceptions.handle(request,
@@ -75,7 +75,7 @@ class EditENCMetadata(forms.SelfHandlingForm):
                                   required=False)
 
     def populate_params_of_the_class(self, instance_id, class_name):
-        enc_metadatas = get_enc_metadata(self.request, instance_id)
+        enc_metadatas = utils.get_enc_metadata(self.request, instance_id)
         return enc_metadatas[class_name]
 
     def __init__(self, request, *args, **kwargs):
@@ -101,7 +101,7 @@ class EditENCMetadata(forms.SelfHandlingForm):
             # for param in class_params.keys():
             #     class_params.update({param:data[param]})
             [class_params.update({param:data[param]}) for param in class_params.keys()]
-            set_enc_metadata(self.request, instance_id, class_name, new_class_params)
+            utils.set_enc_metadata(self.request, instance_id, class_name, new_class_params)
             messages.success(request,('Class was successfully updated.'))
             response = HttpResponse()
             return response
@@ -190,7 +190,7 @@ class AddENCMetadata(forms.SelfHandlingForm):
 
         # api.nova.server_metadata_update(self.request, instance_id, {"clusters":"10"})
 
-        enc_metadatas = get_enc_metadata(self.request, instance_id)
+        enc_metadatas = utils.get_enc_metadata(self.request, instance_id)
         return enc_metadatas.keys()
     
     def populate_classes_choices(self):
@@ -201,7 +201,7 @@ class AddENCMetadata(forms.SelfHandlingForm):
 
     def populate_args_choices(self, instance_id):
         # enc_metadatas = {"classes":{yaml.load(enc_value).keys()[0]:yaml.load(enc_value).values()[0] for (class_name, enc_value) in metadatas.items() if "enc" in class_name}}
-        enc_metadatas = get_enc_metadata(self.request, instance_id)
+        enc_metadatas = utils.get_enc_metadata(self.request, instance_id)
         return enc_metadatas
 
     def handle(self, request, data):
@@ -220,7 +220,7 @@ class AddENCMetadata(forms.SelfHandlingForm):
             [class_params.update({param:data[class_name + param]}) for param in class_params.keys()]
             # for param in classes[data['classes']].keys():
             #     new_class_params.update({param:data[data['classes']+param]})
-            set_enc_metadata(self.request, instance_id, class_name, new_class_params)
+            utils.set_enc_metadata(self.request, instance_id, class_name, new_class_params)
             messages.success(request, _('New class was successfully added.'))
             return True
         except Exception:
