@@ -96,7 +96,7 @@ class EditENCMetadata(forms.SelfHandlingForm):
     def handle(self, request, data):
         try:
             instance_id = data['instance_id']
-            class_name = data['classes']
+            class_name = data['class_name']
 
             class_params = self.populate_params_of_the_class(instance_id, class_name)
             # for param in class_params.keys():
@@ -221,7 +221,7 @@ class AddENCMetadata(forms.SelfHandlingForm):
             [class_params.update({param:data[class_name + param]}) for param in class_params.keys()]
             # for param in classes[data['classes']].keys():
             #     new_class_params.update({param:data[data['classes']+param]})
-            utils.set_enc_metadata(self.request, instance_id, class_name, new_class_params)
+            utils.set_enc_metadata(self.request, instance_id, class_name, class_params)
             messages.success(request, _('New class was successfully added.'))
             return True
         except Exception:
