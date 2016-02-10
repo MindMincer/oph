@@ -102,7 +102,7 @@ class EditENCMetadata(forms.SelfHandlingForm):
             # for param in class_params.keys():
             #     class_params.update({param:data[param]})
             [class_params.update({param:data[param]}) for param in class_params.keys()]
-            utils.set_enc_metadata(self.request, instance_id, class_name, new_class_params)
+            utils.set_enc_metadata(self.request, instance_id, class_name, class_params)
             messages.success(request,('Class was successfully updated.'))
             response = HttpResponse()
             return response

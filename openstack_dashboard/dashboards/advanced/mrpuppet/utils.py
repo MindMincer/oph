@@ -17,6 +17,6 @@ def get_enc_metadata(request, instance_id):
 	return {enc_value.keys()[0]: enc_value.values()[0] for enc_value in enc_values}
 
 def set_enc_metadata(request, instance_id, class_name, parameters):
-    enc_metadata = {class_name: new_class_params}
+    enc_metadata = {class_name: parameters}
     metadata = {"enc_"+class_name: "---\n"+yaml.safe_dump(enc_metadata, allow_unicode=None)}
     set_metadata_as_dict(request, instance_id, metadata)
