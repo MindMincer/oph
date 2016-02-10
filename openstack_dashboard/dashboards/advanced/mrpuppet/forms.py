@@ -7,12 +7,12 @@ from horizon import messages
 from openstack_dashboard.utils import filters
 from openstack_dashboard.settings import PUPPET_SERVER_ID
 
-from openstack_dashboard import api
-
-import simplejson as json
-import yaml
+# import simplejson as json
+# import yaml
 from django.utils.html import mark_safe
 from django.http import HttpResponse
+
+from openstack_dashboard.dashboards.advanced.mrpuppet import utils 
 
 class UpdateMetadata(forms.SelfHandlingForm):
     instance_id = forms.CharField(label=_("Instance ID"),
@@ -22,22 +22,21 @@ class UpdateMetadata(forms.SelfHandlingForm):
     def __init__(self, *args, **kwargs):
         super(UpdateMetadata, self).__init__(*args, **kwargs)
         instance_id = kwargs.get('initial', {}).get('instance_id')
-        # self.fields['instance_id'].initial = instance_id
-        metadatas = api.nova.server_get(self.request, instance_id).to_dict()
-        for key, value in metadatas['metadata'].items():
-            self.fields[key] = forms.CharField(label=key)
-            self.fields[key].required = True
-            self.fields[key].help_text = key
-            self.fields[key].initial = value
+        metadatas = get_metadata(self.request, instance_id)
+        for key, value in metadatas.items():
+            if "enc" not in key:
+                self.fields[key] = forms.CharField(label=key)
+                self.fields[key].required = True
+                self.fields[key].help_text = key
+                self.fields[key].initial = value
 
     def handle(self, request, data):
         try:
             instance_id = data['instance_id']
-            server = api.nova.server_get(self.request, instance_id).to_dict()
-            metadatas = server['metadata']
+            metadatas = get_metadata(self.request, instance_id)
             for key, value in metadatas.items():
                 metadatas.update({key:data[key]})
-            api.nova.server_metadata_update(self.request, instance_id, metadatas)
+            set_metadata(self.request, instance_id, metadatas)
             return True
         except Exception:
             exceptions.handle(request,
@@ -45,21 +44,22 @@ class UpdateMetadata(forms.SelfHandlingForm):
 
 class AddMetadata(forms.SelfHandlingForm):
     instance_id = forms.CharField(label=_("Instance ID"),
-                                  widget=forms.HiddenInput(),
-                                  required=False)
-    name = forms.CharField(max_length=255, label=_("Metadata Name"),
-                                  required=True)
-    value = forms.CharField(max_length=255, label=_("Metadata Value"),
-                                  required=True)
+                                widget=forms.HiddenInput(),
+                                required=False)
+    name = forms.CharField(max_length=255,
+                                label=_("Metadata Name"),
+                                required=True)
+    value = forms.CharField(max_length=255,
+                                label=_("Metadata Value"),
+                                required=True)
 
     def handle(self, request, data):
         try:
             ### TODO : check if exist
             instance_id = data['instance_id']
-            server = api.nova.server_get(self.request, instance_id).to_dict()
-            metadatas = server['metadata']
+            metadatas = get_metadata(self.request, instance_id)
             metadatas.update({data['name']:data['value']})
-            api.nova.server_metadata_update(self.request, instance_id, metadatas)
+            set_metadata(self.request, instance_id, metadatas)
             return True
         except Exception:
             exceptions.handle(request,
@@ -75,18 +75,16 @@ class EditENCMetadata(forms.SelfHandlingForm):
                                   required=False)
 
     def populate_params_of_the_class(self, instance_id, class_name):
-        server = api.nova.server_get(self.request, instance_id).to_dict()
-        metadatas = server['metadata']
-        enc_metadatas = {"classes":{yaml.load(enc_value).keys()[0]:yaml.load(enc_value).values()[0] for (class_name, enc_value) in metadatas.items() if "enc" in class_name}}
-        return enc_metadatas['classes'][class_name]
+        enc_metadatas = get_enc_metadata(self.request, instance_id)
+        return enc_metadatas[class_name]
 
     def __init__(self, request, *args, **kwargs):
         super(EditENCMetadata, self).__init__(request, *args, **kwargs)
         initial = kwargs.get('initial', {})
         instance_id = initial.get('instance_id')
-        self.fields['instance_id'] = forms.CharField(widget=forms.HiddenInput,
-                                                     initial=instance_id)
         class_name = initial.get('class_name')
+        # self.fields['instance_id'] = forms.CharField(widget=forms.HiddenInput,
+        #                                              initial=instance_id)
         params_of_the_class = self.populate_params_of_the_class(instance_id, class_name)
         for key, value in params_of_the_class.items():
             self.fields[key] = forms.CharField(label=key)
@@ -97,13 +95,13 @@ class EditENCMetadata(forms.SelfHandlingForm):
     def handle(self, request, data):
         try:
             instance_id = data['instance_id']
-            new_class_params = dict()
-            ald_class_params = self.populate_params_of_the_class(instance_id, data['class_name'])
-            for param in ald_class_params.keys():
-                new_class_params.update({param:data[param]})
-            enc_metadatas = {data['class_name']:new_class_params}
-            metadatas = {"enc_"+data['class_name']: "---\n"+yaml.safe_dump(enc_metadatas, allow_unicode=None)}
-            api.nova.server_metadata_update(self.request, instance_id, metadatas)
+            class_name = data['classes']
+
+            class_params = self.populate_params_of_the_class(instance_id, class_name)
+            # for param in class_params.keys():
+            #     class_params.update({param:data[param]})
+            [class_params.update({param:data[param]}) for param in class_params.keys()]
+            set_enc_metadata(self.request, instance_id, class_name, new_class_params)
             messages.success(request,('Class was successfully updated.'))
             response = HttpResponse()
             return response
@@ -142,8 +140,8 @@ class AddENCMetadata(forms.SelfHandlingForm):
         super(AddENCMetadata, self).__init__(request, *args, **kwargs)
         initial = kwargs.get('initial', {})
         instance_id = initial.get('instance_id')
-        self.fields['instance_id'] = forms.CharField(widget=forms.HiddenInput,
-                                                     initial=instance_id)
+        # self.fields['instance_id'] = forms.CharField(widget=forms.HiddenInput,
+        #                                              initial=instance_id)
         current_classes = self.get_current_classes(instance_id)
         for the_class in current_classes:
             self.fields[the_class] = forms.CharField(widget=EditENCButtonWidget(),
@@ -152,24 +150,26 @@ class AddENCMetadata(forms.SelfHandlingForm):
                                                     initial = instance_id)
 
         attributes = {'class': 'switchable', 'data-slug': 'classessource'}
-        self.fields['classes'] = forms.ChoiceField(label=_('... or you may add new Class'), help_text=_("Choose a Class to add."),
-                                      widget=forms.Select(attrs=attributes),
-                                      required=False)
+        self.fields['classes'] = forms.ChoiceField(label=_('... or you may add new Class'),
+                                                    help_text=_("Choose a Class to add."),
+                                                    widget=forms.Select(attrs=attributes),
+                                                    required=False)
 
         self.fields['classes'].choices = self.populate_classes_choices()
         classes = self.populate_args_choices()
-        for the_class, params in classes.items():
+        for class_name, params in classes.items():
             for param, var in params.items():
-                self.fields[the_class + param] = forms.CharField(label=param)
-                self.fields[the_class + param].required = True
-                self.fields[the_class + param].help_text = param
-                self.fields[the_class + param].initial = var
-                self.fields[the_class + param].widget.attrs = {'class': 'switched',
+                self.fields[class_name + param] = forms.CharField(label=param)
+                self.fields[class_name + param].required = True
+                self.fields[class_name + param].help_text = param
+                self.fields[class_name + param].initial = var
+                self.fields[class_name + param].widget.attrs = {'class': 'switched',
                                                         'data-switch-on': 'classessource',
                                                         'data-classessource-' + the_class: param}
 
     def get_current_classes(self, instance_id):
         ### TODO: Delete this comment
+        # from openstack_dashboard import api
         # server = api.nova.server_get(self.request, instance_id).to_dict()
         # metadatas = server['metadata']
         # api.nova.server_metadata_delete(self.request, instance_id, metadatas.keys())
@@ -190,33 +190,37 @@ class AddENCMetadata(forms.SelfHandlingForm):
 
         # api.nova.server_metadata_update(self.request, instance_id, {"clusters":"10"})
 
-        server = api.nova.server_get(self.request, instance_id).to_dict()
-        metadatas = server['metadata']
-        enc_metadatas = {"classes":{yaml.load(enc_value).keys()[0]:yaml.load(enc_value).values()[0] for (class_name, enc_value) in metadatas.items() if "enc" in class_name}}
-        return enc_metadatas['classes'].keys()
+        enc_metadatas = get_enc_metadata(self.request, instance_id)
+        return enc_metadatas.keys()
     
     def populate_classes_choices(self):
-        classes_list = self.populate_args_choices()
+        classes_list = self.populate_args_choices(instance_id)
         classes_list = [(key,key) for key in classes_list.keys()]
         classes_list.append(('', _('Select Metadata Class')))
         return sorted(classes_list)
 
-    def populate_args_choices(self):
-        server = api.nova.server_get(self.request, PUPPET_SERVER_ID).to_dict()
-        metadatas = server['metadata']
-        enc_metadatas = {"classes":{yaml.load(enc_value).keys()[0]:yaml.load(enc_value).values()[0] for (class_name, enc_value) in metadatas.items() if "enc" in class_name}}
-        return enc_metadatas['classes']
+    def populate_args_choices(self, instance_id):
+        # enc_metadatas = {"classes":{yaml.load(enc_value).keys()[0]:yaml.load(enc_value).values()[0] for (class_name, enc_value) in metadatas.items() if "enc" in class_name}}
+        enc_metadatas = get_enc_metadata(self.request, instance_id)
+        return enc_metadatas
 
     def handle(self, request, data):
         try:
+
+            # class_params = self.populate_params_of_the_class(data['instance_id'], data['class_name'])
+            # for param in class_params.keys():
+            #     class_params.update({param:data[param]})
+            # set_enc_metadata(self.request, data['instance_id'], data['class_name'], new_class_params)
+
             instance_id = data['instance_id']
-            classes = self.populate_args_choices()
-            new_class_params = dict()
-            for param in classes[data['classes']].keys():
-                new_class_params.update({param:data[data['classes']+param]})
-            enc_metadatas = {data['classes']:new_class_params}
-            metadatas = {"enc_"+data['classes']: "---\n"+yaml.safe_dump(enc_metadatas, allow_unicode=None)}
-            api.nova.server_metadata_update(self.request, instance_id, metadatas)
+            class_name = data['classes']
+
+            class_params = self.populate_args_choices(instance_id)
+            class_params = class_params[class_name]
+            [class_params.update({param:data[class_name + param]}) for param in class_params.keys()]
+            # for param in classes[data['classes']].keys():
+            #     new_class_params.update({param:data[data['classes']+param]})
+            set_enc_metadata(self.request, instance_id, class_name, new_class_params)
             messages.success(request, _('New class was successfully added.'))
             return True
         except Exception:
