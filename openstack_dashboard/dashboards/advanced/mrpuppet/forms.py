@@ -194,14 +194,14 @@ class AddENCMetadata(forms.SelfHandlingForm):
         return enc_metadatas.keys()
     
     def populate_classes_choices(self):
-        classes_list = self.populate_args_choices(instance_id)
+        classes_list = self.populate_args_choices()
         classes_list = [(key,key) for key in classes_list.keys()]
         classes_list.append(('', _('Select Metadata Class')))
         return sorted(classes_list)
 
-    def populate_args_choices(self, instance_id):
+    def populate_args_choices(self):
         # enc_metadatas = {"classes":{yaml.load(enc_value).keys()[0]:yaml.load(enc_value).values()[0] for (class_name, enc_value) in metadatas.items() if "enc" in class_name}}
-        enc_metadatas = utils.get_enc_metadata(self.request, instance_id)
+        enc_metadatas = utils.get_enc_metadata(self.request, PUPPET_SERVER_ID)
         return enc_metadatas
 
     def handle(self, request, data):
@@ -215,7 +215,7 @@ class AddENCMetadata(forms.SelfHandlingForm):
             instance_id = data['instance_id']
             class_name = data['classes']
 
-            class_params = self.populate_args_choices(instance_id)
+            class_params = self.populate_args_choices()
             class_params = class_params[class_name]
             [class_params.update({param:data[class_name + param]}) for param in class_params.keys()]
             # for param in classes[data['classes']].keys():
