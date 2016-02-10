@@ -75,7 +75,7 @@ class EditENCMetadata(forms.SelfHandlingForm):
                                   required=False)
 
     def populate_params_of_the_class(self, instance_id, class_name):
-        server = api.nova.server_get(self.request, PUPPET_SERVER_ID).to_dict()
+        server = api.nova.server_get(self.request, instance_id).to_dict()
         metadatas = server['metadata']
         enc_metadatas = {"classes":{yaml.load(enc_value).keys()[0]:yaml.load(enc_value).values()[0] for (class_name, enc_value) in metadatas.items() if "enc" in class_name}}
         return enc_metadatas['classes'][class_name]
