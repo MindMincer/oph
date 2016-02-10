@@ -179,9 +179,8 @@ class AddENCMetadata(forms.SelfHandlingForm):
     def get_current_classes(self, instance_id):
         server = api.nova.server_get(self.request, instance_id).to_dict()
         metadatas = server['metadata']
-        enc_metadatas = metadatas['enc']
-        enc_metadatas = yaml.load(enc_metadatas)
-        if enc_metadatas:
+        enc_metadatas = {"classes":{enc_value.keys()[0]:yaml.load(enc_value.values()[0]) for (class_name, enc_value) in metadatas.items() if "enc" in class_name}}
+        if enc_metadatas['classes'].items():
             return enc_metadatas['classes'].keys()
         else:
             return []
@@ -196,7 +195,7 @@ class AddENCMetadata(forms.SelfHandlingForm):
         server = api.nova.server_get(self.request, PUPPET_SERVER_ID).to_dict()
         metadatas = server['metadata']
         enc_metadatas = {"classes":{enc_value.keys()[0]:yaml.load(enc_value.values()[0]) for (class_name, enc_value) in metadatas.items() if "enc" in class_name}}
-        return args_choices['classes']
+        return enc_metadatas['classes']
 
     def handle(self, request, data):
         try:
