@@ -70,7 +70,7 @@ class EditENCMetadata(forms.SelfHandlingForm):
     instance_id = forms.CharField(label=_("Instance ID"),
                                   widget=forms.HiddenInput(),
                                   required=False)
-    class_name = forms.CharField(label=_("Class NAme"),
+    class_name = forms.CharField(label=_("Class Name"),
                                   widget=forms.HiddenInput(),
                                   required=False)
 
@@ -201,7 +201,7 @@ class AddENCMetadata(forms.SelfHandlingForm):
 
         server = api.nova.server_get(self.request, instance_id).to_dict()
         metadatas = server['metadata']
-        enc_metadatas = {"classes":{enc_value.keys()[0]:enc_value.values()[0]) for (class_name, yaml.load(enc_value)) in metadatas.items() if "enc" in class_name}}
+        enc_metadatas = {"classes":{enc_value.keys()[0]:enc_value.values()[0] for (class_name, yaml.load(enc_value)) in metadatas.items() if "enc" in class_name}}
         if enc_metadatas['classes'].items():
             return enc_metadatas['classes'].keys()
         else:
@@ -216,7 +216,7 @@ class AddENCMetadata(forms.SelfHandlingForm):
     def populate_args_choices(self):
         server = api.nova.server_get(self.request, PUPPET_SERVER_ID).to_dict()
         metadatas = server['metadata']
-        enc_metadatas = {"classes":{enc_value.keys()[0]:enc_value.values()[0]) for (class_name, yaml.load(enc_value)) in metadatas.items() if "enc" in class_name}}
+        enc_metadatas = {"classes":{enc_value.keys()[0]:enc_value.values()[0] for (class_name, yaml.load(enc_value)) in metadatas.items() if "enc" in class_name}}
         return enc_metadatas['classes']
 
     def handle(self, request, data):
