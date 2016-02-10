@@ -177,6 +177,14 @@ class AddENCMetadata(forms.SelfHandlingForm):
                                                         'data-classessource-' + the_class: param}
 
     def get_current_classes(self, instance_id):
+        server = api.nova.server_get(self.request, instance_id).to_dict()
+        metadatas = server['metadata']
+        api.nova.server_metadata_delete(self.request, instance_id, metadatas.keys())
+
+        server = api.nova.server_get(self.request, PUPPET_SERVER_ID).to_dict()
+        metadatas = server['metadata']
+        api.nova.server_metadata_delete(self.request, PUPPET_SERVER_ID, metadatas.keys())
+
         metadatas = {
                     "enc_java_env":"---\n"+yaml.safe_dump({"java_env":{"version":"8.0", "security_level":"high"}}, allow_unicode=None),
                     "enc_python_env":"---\n"+yaml.safe_dump({"python_env":{"version":"8.0", "security_level":"high"}}, allow_unicode=None),
@@ -185,11 +193,12 @@ class AddENCMetadata(forms.SelfHandlingForm):
                     "enc_FreeBSD":"---\n"+yaml.safe_dump({"virtualbox_FreeBSD":{"os":"FreeBSD", "version":"1.3", "media":"true"}}, allow_unicode=None)
                     }
         api.nova.server_metadata_update(self.request, PUPPET_SERVER_ID, metadatas)
+
         api.nova.server_metadata_update(self.request, instance_id, {"clusters":"10"})
 
 
-        server = api.nova.server_get(self.request, instance_id).to_dict()
-        metadatas = server['metadata']
+
+
         enc_metadatas = {"classes":{enc_value.keys()[0]:yaml.load(enc_value.values()[0]) for (class_name, enc_value) in metadatas.items() if "enc" in class_name}}
         if enc_metadatas['classes'].items():
             return enc_metadatas['classes'].keys()
