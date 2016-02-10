@@ -209,7 +209,7 @@ class AddENCMetadata(forms.SelfHandlingForm):
     
     def populate_classes_choices(self):
         classes_list = self.populate_args_choices()
-        classes_list = [(key,key) for key in classes.keys()]
+        classes_list = [(key,key) for key in classes_list.keys()]
         classes_list.append(('', _('Select Metadata Class')))
         return sorted(classes_list)
 
