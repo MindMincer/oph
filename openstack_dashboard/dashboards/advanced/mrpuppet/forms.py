@@ -166,7 +166,7 @@ class AddENCMetadata(forms.SelfHandlingForm):
                 self.fields[class_name + param].initial = var
                 self.fields[class_name + param].widget.attrs = {'class': 'switched',
                                                         'data-switch-on': 'classessource',
-                                                        'data-classessource-' + the_class: param}
+                                                        'data-classessource-' + class_name: param}
 
     def get_current_classes(self, instance_id):
         ### TODO: Delete this comment
