@@ -17,5 +17,5 @@ def get_enc_metadata(request, instance_id):
 
 def set_enc_metadata(request, instance_id, class_name, parameters):
     enc_metadata = {class_name: parameters}
-    metadata = {"enc_"+class_name: yaml.safe_dump(enc_metadata, allow_unicode=None)}
+    metadata = {"enc_"+class_name: yaml.safe_dump(enc_metadata, allow_unicode=None, default_flow_style=False)}
     set_metadata(request, instance_id, metadata)
