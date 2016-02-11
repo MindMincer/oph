@@ -7,8 +7,6 @@ from horizon import messages
 from openstack_dashboard.utils import filters
 from openstack_dashboard.settings import PUPPET_SERVER_ID
 
-# import simplejson as json
-# import yaml
 from django.utils.html import mark_safe
 from django.http import HttpResponse
 
@@ -38,10 +36,10 @@ class UpdateMetadata(forms.SelfHandlingForm):
                 if "enc" not in key:
                     metadatas.update({key:data[key]})
             utils.set_metadata(self.request, instance_id, metadatas)
+            messages.success(request,_('Metadata was successfully updated.'))
             return True
         except Exception:
-            exceptions.handle(request,
-                              _('Unable to update metadata.'))
+            exceptions.handle(request,_('Unable to update metadata.'))
 
 class AddMetadata(forms.SelfHandlingForm):
     instance_id = forms.CharField(label=_("Instance ID"),
@@ -56,15 +54,17 @@ class AddMetadata(forms.SelfHandlingForm):
 
     def handle(self, request, data):
         try:
-            ### TODO : check if exist
             instance_id = data['instance_id']
             metadatas = utils.get_metadata(self.request, instance_id)
-            metadatas.update({data['name']:data['value']})
-            utils.set_metadata(self.request, instance_id, metadatas)
-            return True
+            if data['name'] not in metadatas.keys():
+                metadatas.update({data['name']:data['value']})
+                utils.set_metadata(self.request, instance_id, metadatas)
+                messages.success(request,_('Metadata was successfully added.'))
+                return True
+            else:
+                exceptions.handle(request,_('Such metadata key already exists. Please, go to Update Metadata to change it.'))
         except Exception:
-            exceptions.handle(request,
-                              _('Unable to add metadata.'))
+            exceptions.handle(request,_('Unable to add metadata.'))
 
 
 class EditENCMetadata(forms.SelfHandlingForm):
@@ -84,8 +84,6 @@ class EditENCMetadata(forms.SelfHandlingForm):
         initial = kwargs.get('initial', {})
         instance_id = initial.get('instance_id')
         class_name = initial.get('class_name')
-        # self.fields['instance_id'] = forms.CharField(widget=forms.HiddenInput,
-        #                                              initial=instance_id)
         params_of_the_class = self.populate_params_of_the_class(instance_id, class_name)
         for key, value in params_of_the_class.items():
             self.fields[key] = forms.CharField(label=key)
@@ -99,11 +97,9 @@ class EditENCMetadata(forms.SelfHandlingForm):
             class_name = data['class_name']
 
             class_params = self.populate_params_of_the_class(instance_id, class_name)
-            # for param in class_params.keys():
-            #     class_params.update({param:data[param]})
             [class_params.update({param:data[param]}) for param in class_params.keys()]
             utils.set_enc_metadata(self.request, instance_id, class_name, class_params)
-            messages.success(request,('Class was successfully updated.'))
+            messages.success(request,_('Class was successfully updated.'))
             response = HttpResponse()
             return response
         except Exception:
@@ -111,24 +107,25 @@ class EditENCMetadata(forms.SelfHandlingForm):
 
 
 class EditENCButtonWidget(forms.Widget):
-    submit_url = "horizon:advanced:mrpuppet:edit_enc_metadata"
+    submit_url = "horizon:advanced:mrpuppet:delete_metadata"
     def render(self, name, value, attrs=None):
         instance_id = value
-        url = reverse(self.submit_url, kwargs={'instance_id': instance_id, "class_name":name})
+        url = reverse(self.submit_url, kwargs={'instance_id': instance_id, "class_name": name})
         return mark_safe("""<label class="control-label" for="id_classes">{1} </label>
                             <a href="{0}" class="btn btn-default btn btn-default ajax-add ajax-modal">
                                 <i class="fa fa-pencil-square-o"></i>
-                            </a>""".format(url,name))
+                            </a>""".format(url, name))
 
 
-# class AddENCButtonWidget(forms.Widget):
-#     submit_url = "horizon:advanced:mrpuppet:add_enc_metadata"
-#     # EDIT_ENC_URL = "horizon:advanced:mrpuppet:edit_enc_class"
+# class DeleteButtonWidget(forms.Widget):
+#     submit_url = "horizon:advanced:mrpuppet:edit_enc_metadata"
 #     def render(self, name, value, attrs=None):
 #         instance_id = value
-#         url = reverse(self.submit_url, args=[instance_id])
-#         text = "Or you maay add new class"
-#         return mark_safe('{1}{2}<a href="{0}" class="btn btn-default"><i class="fa fa-plus"></i></a>'.format(url,text, attrs))
+#         url = reverse(self.submit_url, kwargs={'instance_id': instance_id, "class_name": name})
+#         return mark_safe("""<label class="control-label" for="id_classes">{1} </label>
+#                             <a href="{0}" class="btn btn-default btn btn-default ajax-add ajax-modal">
+#                                 <i class="fa fa-trash-o"></i>
+#                             </a>""".format(url, name))
 
 
 class AddENCMetadata(forms.SelfHandlingForm):
@@ -141,8 +138,6 @@ class AddENCMetadata(forms.SelfHandlingForm):
         super(AddENCMetadata, self).__init__(request, *args, **kwargs)
         initial = kwargs.get('initial', {})
         instance_id = initial.get('instance_id')
-        # self.fields['instance_id'] = forms.CharField(widget=forms.HiddenInput,
-        #                                              initial=instance_id)
         current_classes = self.get_current_classes(instance_id)
         for the_class in current_classes:
             self.fields[the_class] = forms.CharField(widget=EditENCButtonWidget(),
@@ -159,14 +154,15 @@ class AddENCMetadata(forms.SelfHandlingForm):
         self.fields['classes'].choices = self.populate_classes_choices()
         classes = self.populate_args_choices()
         for class_name, params in classes.items():
-            for param, var in params.items():
-                self.fields[class_name + param] = forms.CharField(label=param)
-                self.fields[class_name + param].required = True
-                self.fields[class_name + param].help_text = param
-                self.fields[class_name + param].initial = var
-                self.fields[class_name + param].widget.attrs = {'class': 'switched',
-                                                        'data-switch-on': 'classessource',
-                                                        'data-classessource-' + class_name: param}
+            if class_name not in current_classes:
+                for param, var in params.items():
+                    self.fields[class_name + param] = forms.CharField(label=param)
+                    self.fields[class_name + param].required = True
+                    self.fields[class_name + param].help_text = param
+                    self.fields[class_name + param].initial = var
+                    self.fields[class_name + param].widget.attrs = {'class': 'switched',
+                                                            'data-switch-on': 'classessource',
+                                                            'data-classessource-' + class_name: param}
 
     def get_current_classes(self, instance_id):
         ### TODO: Delete this comment
@@ -201,26 +197,17 @@ class AddENCMetadata(forms.SelfHandlingForm):
         return sorted(classes_list)
 
     def populate_args_choices(self):
-        # enc_metadatas = {"classes":{yaml.load(enc_value).keys()[0]:yaml.load(enc_value).values()[0] for (class_name, enc_value) in metadatas.items() if "enc" in class_name}}
         enc_metadatas = utils.get_enc_metadata(self.request, PUPPET_SERVER_ID)
         return enc_metadatas
 
     def handle(self, request, data):
         try:
-
-            # class_params = self.populate_params_of_the_class(data['instance_id'], data['class_name'])
-            # for param in class_params.keys():
-            #     class_params.update({param:data[param]})
-            # set_enc_metadata(self.request, data['instance_id'], data['class_name'], new_class_params)
-
             instance_id = data['instance_id']
             class_name = data['classes']
 
             class_params = self.populate_args_choices()
             class_params = class_params[class_name]
             [class_params.update({param:data[class_name + param]}) for param in class_params.keys()]
-            # for param in classes[data['classes']].keys():
-            #     new_class_params.update({param:data[data['classes']+param]})
             utils.set_enc_metadata(self.request, instance_id, class_name, class_params)
             messages.success(request, _('New class was successfully added.'))
             return True
