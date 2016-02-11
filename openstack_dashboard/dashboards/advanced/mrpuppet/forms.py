@@ -62,7 +62,7 @@ class AddMetadata(forms.SelfHandlingForm):
                 messages.success(request,_('Metadata was successfully added.'))
                 return True
             else:
-                exceptions.handle(request,_('Such metadata key already exists. Please, go to Update Metadata to change it.'))
+                messages.warning(request,_('Such metadata key already exists. Please, go to Update Metadata to change it.'))
         except Exception:
             exceptions.handle(request,_('Unable to add metadata.'))
 
@@ -107,7 +107,7 @@ class EditENCMetadata(forms.SelfHandlingForm):
 
 
 class EditENCButtonWidget(forms.Widget):
-    submit_url = "horizon:advanced:mrpuppet:delete_metadata"
+    submit_url = "horizon:advanced:mrpuppet:edit_enc_metadata"
     def render(self, name, value, attrs=None):
         instance_id = value
         url = reverse(self.submit_url, kwargs={'instance_id': instance_id, "class_name": name})
@@ -118,7 +118,7 @@ class EditENCButtonWidget(forms.Widget):
 
 
 # class DeleteButtonWidget(forms.Widget):
-#     submit_url = "horizon:advanced:mrpuppet:edit_enc_metadata"
+#     submit_url = "horizon:advanced:mrpuppet:delete_metadata"
 #     def render(self, name, value, attrs=None):
 #         instance_id = value
 #         url = reverse(self.submit_url, kwargs={'instance_id': instance_id, "class_name": name})
