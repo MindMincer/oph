@@ -193,8 +193,7 @@ class AddENCMetadata(forms.SelfHandlingForm):
     def populate_classes_choices(self, instance_id):
         classes_list = self.populate_args_choices()
         current_classes = self.get_current_classes(instance_id)
-        classes_list = [class_name for class_name in classes_list if class_name not in current_classes]
-        classes_list = [(key,key) for key in classes_list.keys()]
+        classes_list = [(class_name,class_name) for class_name in classes_list.keys() if class_name not in current_classes]
         classes_list.append(('', _('Select Metadata Class')))
         return sorted(classes_list)
 
