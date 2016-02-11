@@ -151,7 +151,7 @@ class AddENCMetadata(forms.SelfHandlingForm):
                                                     widget=forms.Select(attrs=attributes),
                                                     required=False)
 
-        self.fields['classes'].choices = self.populate_classes_choices()
+        self.fields['classes'].choices = self.populate_classes_choices(instance_id)
         classes = self.populate_args_choices()
         for class_name, params in classes.items():
             if class_name not in current_classes:
@@ -190,8 +190,10 @@ class AddENCMetadata(forms.SelfHandlingForm):
         enc_metadatas = utils.get_enc_metadata(self.request, instance_id)
         return enc_metadatas.keys()
     
-    def populate_classes_choices(self):
+    def populate_classes_choices(self, instance_id):
         classes_list = self.populate_args_choices()
+        current_classes = self.get_current_classes(instance_id)
+        classes_list = [class_name for class_name in classes_list if class_name not in current_classes]
         classes_list = [(key,key) for key in classes_list.keys()]
         classes_list.append(('', _('Select Metadata Class')))
         return sorted(classes_list)
