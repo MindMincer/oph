@@ -167,6 +167,7 @@ class AddENCMetadata(forms.SelfHandlingForm):
     def get_current_classes(self, instance_id):
         ### TODO: Delete this comment
         from openstack_dashboard import api
+        import yaml
         server = api.nova.server_get(self.request, instance_id).to_dict()
         metadatas = server['metadata']
         api.nova.server_metadata_delete(self.request, instance_id, metadatas.keys())
