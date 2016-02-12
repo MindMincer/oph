@@ -12,7 +12,8 @@ def is_deleting(instance):
     return task_state.lower() == "deleting"
 
 def is_server(instance):
-    return instance.id == PUPPET_SERVER_ID
+    # return instance.id == PUPPET_SERVER_ID
+    return False
 
 
 def has_metadata(instance):
