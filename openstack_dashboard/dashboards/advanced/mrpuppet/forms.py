@@ -166,25 +166,25 @@ class AddENCMetadata(forms.SelfHandlingForm):
 
     def get_current_classes(self, instance_id):
         ### TODO: Delete this comment
-        # from openstack_dashboard import api
-        # import yaml
-        # server = api.nova.server_get(self.request, instance_id).to_dict()
-        # metadatas = server['metadata']
-        # api.nova.server_metadata_delete(self.request, instance_id, metadatas.keys())
+        from openstack_dashboard import api
+        import yaml
+        server = api.nova.server_get(self.request, instance_id).to_dict()
+        metadatas = server['metadata']
+        api.nova.server_metadata_delete(self.request, instance_id, metadatas.keys())
 
-        # server = api.nova.server_get(self.request, PUPPET_SERVER_ID).to_dict()
-        # metadatas = server['metadata']
-        # api.nova.server_metadata_delete(self.request, PUPPET_SERVER_ID, metadatas.keys())
+        server = api.nova.server_get(self.request, PUPPET_SERVER_ID).to_dict()
+        metadatas = server['metadata']
+        api.nova.server_metadata_delete(self.request, PUPPET_SERVER_ID, metadatas.keys())
 
-        # metadatas = {
-        #             "enc_java_env":"---\n"+yaml.safe_dump({"java_env":{"version":"8.0", "security_level":"high"}}, allow_unicode=None, default_flow_style=False),
-        #             "enc_python_env":"---\n"+yaml.safe_dump({"python_env":{"version":"2.7", "installer":"pip"}}, allow_unicode=None, default_flow_style=False),
-        #             "enc_apache":"---\n"+yaml.safe_dump({"apache":{"default_vhost": True, "service_ensure": "running"}}, allow_unicode=None, default_flow_style=False),
-        #             "enc_virtualbox_linux":"---\n"+yaml.safe_dump({"virtualbox_linux":{"os":"Linux", "version":"2.4", "usb_driver":True, "storage":"100GB"}}, default_flow_style=False, allow_unicode=None)
-        #             }
-        # api.nova.server_metadata_update(self.request, PUPPET_SERVER_ID, metadatas)
+        metadatas = {
+                    "enc_java_env":"---\n"+yaml.safe_dump({"java_env":{"version":"8.0", "security_level":"high"}}, allow_unicode=None, default_flow_style=False),
+                    "enc_python_env":"---\n"+yaml.safe_dump({"python_env":{"version":"2.7", "installer":"pip"}}, allow_unicode=None, default_flow_style=False),
+                    "enc_apache":"---\n"+yaml.safe_dump({"apache":{"package_ensure": 'installed', "default_vhost": True, "service_ensure": "running"}}, allow_unicode=None, default_flow_style=False),
+                    "enc_virtualbox_linux":"---\n"+yaml.safe_dump({"virtualbox_linux":{"os":"Linux", "version":"2.4", "usb_driver":True, "storage":"100GB"}}, default_flow_style=False, allow_unicode=None)
+                    }
+        api.nova.server_metadata_update(self.request, PUPPET_SERVER_ID, metadatas)
 
-        # api.nova.server_metadata_update(self.request, instance_id, {"clusters":"10"})
+        api.nova.server_metadata_update(self.request, instance_id, {"clusters":"10"})
 
         enc_metadatas = utils.get_enc_metadata(self.request, instance_id)
         return enc_metadatas.keys()
