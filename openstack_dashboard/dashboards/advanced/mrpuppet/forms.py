@@ -22,11 +22,11 @@ class UpdateMetadata(forms.SelfHandlingForm):
         instance_id = kwargs.get('initial', {}).get('instance_id')
         metadatas = utils.get_metadata(self.request, instance_id)
         for key, value in metadatas.items():
-            if "enc" not in key:
-                self.fields[key] = forms.CharField(label=key)
-                self.fields[key].required = True
-                self.fields[key].help_text = key
-                self.fields[key].initial = value
+            # if "enc" not in key:
+            self.fields[key] = forms.CharField(label=key)
+            self.fields[key].required = True
+            self.fields[key].help_text = key
+            self.fields[key].initial = value
 
     def handle(self, request, data):
         try:
