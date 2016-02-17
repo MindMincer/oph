@@ -1,0 +1,28 @@
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+
+from django.conf.urls import patterns
+from django.conf.urls import url
+
+from openstack_dashboard.dashboards.advanced.mrpuppet import views 
+
+INSTANCES = r'^(?P<instance_id>[^/]+)/%s$'
+INSTANCE_ENCCLASS = r'^(?P<instance_id>[^/]+)/(?P<class_name>[^/]+)/%s$'
+
+urlpatterns = patterns(
+	'openstack_dashboard.dashboards.advanced.mrpuppet.views',
+    url(r'^$',views.IndexView.as_view(), name='index'),
+    url(INSTANCES % 'add_metadata', views.AddMetadataView.as_view(), name='add_metadata'),
+    url(INSTANCES % 'update_metadata', views.UpdateMetadataView.as_view(), name='update_metadata'),
+    url(INSTANCES % 'add_enc_metadata', views.AddENCMetadataView.as_view(), name='add_enc_metadata'),
+    url(INSTANCE_ENCCLASS % 'edit_enc_metadata', views.EditEncClassView.as_view(), name='edit_enc_metadata'),
+)
